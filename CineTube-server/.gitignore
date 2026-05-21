@@ -1,0 +1,8 @@
+Node_modules
+Dist
+.env
+.env.*
+ !.env.example
+.DS_Store
+.idea
+/generated/prisma
