@@ -1,0 +1,34 @@
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  
+  // Relations
+  subscriptions Subscription[]
+  reviews       Review[]
+  comments      Comment[]
+  reviewLikes   ReviewLike[]
+  watchlist     Watchlist[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id               Int                @id @default(autoincrement())
+  userId           Int                @map("user_id")
+  stripePaymentId  String             @unique @map("stripe_payment_id")
+  planType         PlanType           @map("plan_type")
+  amount           Decimal            @db.Decimal(10, 2)
+  status           SubscriptionStatus @default(ACTIVE)
+  startDate        DateTime           @default(now()) @map("start_date")
+  endDate          DateTime           @map("end_date")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
