@@ -1,13 +1,12 @@
-
 model Review {
   id         Int      @id @default(autoincrement())
-  userId     Int      @map("user_id")
+  userId     String   @map("user_id")
   mediaId    Int      @map("media_id")
-  rating     Int      
-  reviewText String   @db.Text @map("review_text")
+  rating     Int
+  reviewText String   @map("review_text") @db.Text
   isSpoiler  Boolean  @default(false) @map("is_spoiler")
   status     Status   @default(PENDING)
-  tags       String?  
+  tags       String?
   createdAt  DateTime @default(now()) @map("created_at")
 
   // Relations
@@ -17,37 +16,40 @@ model Review {
   reviewLikes ReviewLike[]
 
   @@index([status])
+  @@index([mediaId])
   @@map("reviews")
 }
 
 model Comment {
   id              Int      @id @default(autoincrement())
   reviewId        Int      @map("review_id")
-  userId          Int      @map("user_id")
-  parentCommentId Int?     @map("parent_comment_id") 
-  commentText     String   @db.Text @map("comment_text")
+  userId          String   @map("user_id")
+  parentCommentId Int?     @map("parent_comment_id")
+  commentText     String   @map("comment_text") @db.Text
   status          Status   @default(APPROVED)
   createdAt       DateTime @default(now()) @map("created_at")
 
   // Relations
-  review        Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  // Self-referencing (Nested Comments/Replies)
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   parentComment Comment?  @relation("CommentToComment", fields: [parentCommentId], references: [id], onDelete: Cascade)
   replies       Comment[] @relation("CommentToComment")
 
+  @@index([reviewId])
+  @@index([parentCommentId])
   @@map("comments")
 }
 
 model ReviewLike {
-  userId   Int @map("user_id")
-  reviewId Int @map("review_id")
+  userId   String @map("user_id")
+  reviewId Int    @map("review_id")
 
   // Relations
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 
   @@id([userId, reviewId])
+  @@index([reviewId])
   @@map("review_likes")
 }

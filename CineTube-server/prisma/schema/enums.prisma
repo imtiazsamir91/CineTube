@@ -13,10 +13,12 @@ enum PlanType {
   MONTHLY
   YEARLY
 }
+
 enum PricingType {
   FREE
   PREMIUM
 }
+
 enum Status {
   PENDING
   APPROVED
