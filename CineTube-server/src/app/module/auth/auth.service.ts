@@ -2,7 +2,7 @@ import status from "http-status";
 import { auth } from "../../lib/auth"; 
 import { prisma } from "../../lib/prisma"; 
 import AppError from "../../errorHelpers/AppError"; 
-import { ISignUpPayload } from "./auth.interface";
+import { ILoginUserPayload, ISignUpPayload } from "./auth.interface";
 
 
 const registerUser = async (payload: ISignUpPayload) => {
@@ -47,7 +47,17 @@ const registerUser = async (payload: ISignUpPayload) => {
         session,
     };
 };
-
+const loginUser = async (payload: ILoginUserPayload) => {
+    const { email, password } = payload;
+    const authResponse = await auth.api.signInEmail({
+        body: {
+            email,
+            password,
+        },
+    });
+    return authResponse;
+};
 export const AuthService = {
     registerUser,
+    loginUser,
 };
