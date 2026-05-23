@@ -47,10 +47,20 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
- * Model Subscription
+ * Model Session
  * 
  */
-export type Subscription = Prisma.SubscriptionModel
+export type Session = Prisma.SessionModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel
 /**
  * Model Media
  * 
@@ -76,3 +86,8 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type ReviewLike = Prisma.ReviewLikeModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel

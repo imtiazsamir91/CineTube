@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { MediaService } from "./media.service";
+import { any } from "better-auth";
 
-
+// Custom Request Interface matching String (UUID) pattern
 interface CustomRequest extends Request {
     user?: {
-        id: string | number;
+        id: string; 
         role?: string;
         email?: string;
     }
@@ -15,7 +16,9 @@ interface CustomRequest extends Request {
 const createMedia = catchAsync(
     async (req: Request, res: Response) => {
        
-        const result = await MediaService.createMedia(req.body);
+        const { id, createdAt, ...mediaData } = req.body;
+        
+        const result = await MediaService.createMedia(mediaData);
         
         sendResponse(res, {
             httpStatusCode: 201,
@@ -28,14 +31,14 @@ const createMedia = catchAsync(
 
 const getAllMedia = catchAsync(
     async (req: Request, res: Response) => {
-       
         const customReq = req as CustomRequest;
-        const loggedInUserId = customReq.user ? Number(customReq.user.id) : null; 
         
-       
+        
+        const loggedInUserId = customReq.user?.id ? String(customReq.user.id) : null; 
+        
         const filters = req.query; 
         
-        const result = await MediaService.getAllMedia(filters, loggedInUserId);
+        const result = await MediaService.getAllMedia(filters as any, (loggedInUserId || null) as any);
         
         sendResponse(res, {
             httpStatusCode: 200,
@@ -49,7 +52,8 @@ const getAllMedia = catchAsync(
 const getMediaById = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
-        const result = await MediaService.getMediaById(Number(id));
+       
+        const result = await MediaService.getMediaById(String(id));
         
         sendResponse(res, {
             httpStatusCode: 200,
@@ -63,9 +67,9 @@ const getMediaById = catchAsync(
 const updateMedia = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
+        const { id: bodyId, createdAt, ...updateData } = req.body;
         
-        
-        const result = await MediaService.updateMedia(Number(id), req.body);
+        const result = await MediaService.updateMedia(String(id), updateData);
         
         sendResponse(res, {
             httpStatusCode: 200,
@@ -79,7 +83,7 @@ const updateMedia = catchAsync(
 const deleteMedia = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
-        const result = await MediaService.deleteMedia(Number(id));
+        const result = await MediaService.deleteMedia(String(id));
         
         sendResponse(res, {
             httpStatusCode: 200,

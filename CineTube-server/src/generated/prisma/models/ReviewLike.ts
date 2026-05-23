@@ -20,30 +20,18 @@ export type ReviewLikeModel = runtime.Types.Result.DefaultSelection<Prisma.$Revi
 
 export type AggregateReviewLike = {
   _count: ReviewLikeCountAggregateOutputType | null
-  _avg: ReviewLikeAvgAggregateOutputType | null
-  _sum: ReviewLikeSumAggregateOutputType | null
   _min: ReviewLikeMinAggregateOutputType | null
   _max: ReviewLikeMaxAggregateOutputType | null
 }
 
-export type ReviewLikeAvgAggregateOutputType = {
-  userId: number | null
-  reviewId: number | null
-}
-
-export type ReviewLikeSumAggregateOutputType = {
-  userId: number | null
-  reviewId: number | null
-}
-
 export type ReviewLikeMinAggregateOutputType = {
-  userId: number | null
-  reviewId: number | null
+  userId: string | null
+  reviewId: string | null
 }
 
 export type ReviewLikeMaxAggregateOutputType = {
-  userId: number | null
-  reviewId: number | null
+  userId: string | null
+  reviewId: string | null
 }
 
 export type ReviewLikeCountAggregateOutputType = {
@@ -52,16 +40,6 @@ export type ReviewLikeCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ReviewLikeAvgAggregateInputType = {
-  userId?: true
-  reviewId?: true
-}
-
-export type ReviewLikeSumAggregateInputType = {
-  userId?: true
-  reviewId?: true
-}
 
 export type ReviewLikeMinAggregateInputType = {
   userId?: true
@@ -117,18 +95,6 @@ export type ReviewLikeAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ReviewLikeAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ReviewLikeSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ReviewLikeMinAggregateInputType
@@ -159,18 +125,14 @@ export type ReviewLikeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: ReviewLikeCountAggregateInputType | true
-  _avg?: ReviewLikeAvgAggregateInputType
-  _sum?: ReviewLikeSumAggregateInputType
   _min?: ReviewLikeMinAggregateInputType
   _max?: ReviewLikeMaxAggregateInputType
 }
 
 export type ReviewLikeGroupByOutputType = {
-  userId: number
-  reviewId: number
+  userId: string
+  reviewId: string
   _count: ReviewLikeCountAggregateOutputType | null
-  _avg: ReviewLikeAvgAggregateOutputType | null
-  _sum: ReviewLikeSumAggregateOutputType | null
   _min: ReviewLikeMinAggregateOutputType | null
   _max: ReviewLikeMaxAggregateOutputType | null
 }
@@ -194,8 +156,8 @@ export type ReviewLikeWhereInput = {
   AND?: Prisma.ReviewLikeWhereInput | Prisma.ReviewLikeWhereInput[]
   OR?: Prisma.ReviewLikeWhereInput[]
   NOT?: Prisma.ReviewLikeWhereInput | Prisma.ReviewLikeWhereInput[]
-  userId?: Prisma.IntFilter<"ReviewLike"> | number
-  reviewId?: Prisma.IntFilter<"ReviewLike"> | number
+  userId?: Prisma.StringFilter<"ReviewLike"> | string
+  reviewId?: Prisma.StringFilter<"ReviewLike"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   review?: Prisma.XOR<Prisma.ReviewScalarRelationFilter, Prisma.ReviewWhereInput>
 }
@@ -212,8 +174,8 @@ export type ReviewLikeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ReviewLikeWhereInput | Prisma.ReviewLikeWhereInput[]
   OR?: Prisma.ReviewLikeWhereInput[]
   NOT?: Prisma.ReviewLikeWhereInput | Prisma.ReviewLikeWhereInput[]
-  userId?: Prisma.IntFilter<"ReviewLike"> | number
-  reviewId?: Prisma.IntFilter<"ReviewLike"> | number
+  userId?: Prisma.StringFilter<"ReviewLike"> | string
+  reviewId?: Prisma.StringFilter<"ReviewLike"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   review?: Prisma.XOR<Prisma.ReviewScalarRelationFilter, Prisma.ReviewWhereInput>
 }, "userId_reviewId">
@@ -222,18 +184,16 @@ export type ReviewLikeOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
   _count?: Prisma.ReviewLikeCountOrderByAggregateInput
-  _avg?: Prisma.ReviewLikeAvgOrderByAggregateInput
   _max?: Prisma.ReviewLikeMaxOrderByAggregateInput
   _min?: Prisma.ReviewLikeMinOrderByAggregateInput
-  _sum?: Prisma.ReviewLikeSumOrderByAggregateInput
 }
 
 export type ReviewLikeScalarWhereWithAggregatesInput = {
   AND?: Prisma.ReviewLikeScalarWhereWithAggregatesInput | Prisma.ReviewLikeScalarWhereWithAggregatesInput[]
   OR?: Prisma.ReviewLikeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ReviewLikeScalarWhereWithAggregatesInput | Prisma.ReviewLikeScalarWhereWithAggregatesInput[]
-  userId?: Prisma.IntWithAggregatesFilter<"ReviewLike"> | number
-  reviewId?: Prisma.IntWithAggregatesFilter<"ReviewLike"> | number
+  userId?: Prisma.StringWithAggregatesFilter<"ReviewLike"> | string
+  reviewId?: Prisma.StringWithAggregatesFilter<"ReviewLike"> | string
 }
 
 export type ReviewLikeCreateInput = {
@@ -242,8 +202,8 @@ export type ReviewLikeCreateInput = {
 }
 
 export type ReviewLikeUncheckedCreateInput = {
-  userId: number
-  reviewId: number
+  userId: string
+  reviewId: string
 }
 
 export type ReviewLikeUpdateInput = {
@@ -252,13 +212,13 @@ export type ReviewLikeUpdateInput = {
 }
 
 export type ReviewLikeUncheckedUpdateInput = {
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  reviewId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ReviewLikeCreateManyInput = {
-  userId: number
-  reviewId: number
+  userId: string
+  reviewId: string
 }
 
 export type ReviewLikeUpdateManyMutationInput = {
@@ -266,8 +226,8 @@ export type ReviewLikeUpdateManyMutationInput = {
 }
 
 export type ReviewLikeUncheckedUpdateManyInput = {
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  reviewId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ReviewLikeListRelationFilter = {
@@ -281,16 +241,11 @@ export type ReviewLikeOrderByRelationAggregateInput = {
 }
 
 export type ReviewLikeUserIdReviewIdCompoundUniqueInput = {
-  userId: number
-  reviewId: number
+  userId: string
+  reviewId: string
 }
 
 export type ReviewLikeCountOrderByAggregateInput = {
-  userId?: Prisma.SortOrder
-  reviewId?: Prisma.SortOrder
-}
-
-export type ReviewLikeAvgOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
 }
@@ -301,11 +256,6 @@ export type ReviewLikeMaxOrderByAggregateInput = {
 }
 
 export type ReviewLikeMinOrderByAggregateInput = {
-  userId?: Prisma.SortOrder
-  reviewId?: Prisma.SortOrder
-}
-
-export type ReviewLikeSumOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
 }
@@ -399,7 +349,7 @@ export type ReviewLikeCreateWithoutUserInput = {
 }
 
 export type ReviewLikeUncheckedCreateWithoutUserInput = {
-  reviewId: number
+  reviewId: string
 }
 
 export type ReviewLikeCreateOrConnectWithoutUserInput = {
@@ -432,8 +382,8 @@ export type ReviewLikeScalarWhereInput = {
   AND?: Prisma.ReviewLikeScalarWhereInput | Prisma.ReviewLikeScalarWhereInput[]
   OR?: Prisma.ReviewLikeScalarWhereInput[]
   NOT?: Prisma.ReviewLikeScalarWhereInput | Prisma.ReviewLikeScalarWhereInput[]
-  userId?: Prisma.IntFilter<"ReviewLike"> | number
-  reviewId?: Prisma.IntFilter<"ReviewLike"> | number
+  userId?: Prisma.StringFilter<"ReviewLike"> | string
+  reviewId?: Prisma.StringFilter<"ReviewLike"> | string
 }
 
 export type ReviewLikeCreateWithoutReviewInput = {
@@ -441,7 +391,7 @@ export type ReviewLikeCreateWithoutReviewInput = {
 }
 
 export type ReviewLikeUncheckedCreateWithoutReviewInput = {
-  userId: number
+  userId: string
 }
 
 export type ReviewLikeCreateOrConnectWithoutReviewInput = {
@@ -471,7 +421,7 @@ export type ReviewLikeUpdateManyWithWhereWithoutReviewInput = {
 }
 
 export type ReviewLikeCreateManyUserInput = {
-  reviewId: number
+  reviewId: string
 }
 
 export type ReviewLikeUpdateWithoutUserInput = {
@@ -479,15 +429,15 @@ export type ReviewLikeUpdateWithoutUserInput = {
 }
 
 export type ReviewLikeUncheckedUpdateWithoutUserInput = {
-  reviewId?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ReviewLikeUncheckedUpdateManyWithoutUserInput = {
-  reviewId?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ReviewLikeCreateManyReviewInput = {
-  userId: number
+  userId: string
 }
 
 export type ReviewLikeUpdateWithoutReviewInput = {
@@ -495,11 +445,11 @@ export type ReviewLikeUpdateWithoutReviewInput = {
 }
 
 export type ReviewLikeUncheckedUpdateWithoutReviewInput = {
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ReviewLikeUncheckedUpdateManyWithoutReviewInput = {
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -551,8 +501,8 @@ export type $ReviewLikePayload<ExtArgs extends runtime.Types.Extensions.Internal
     review: Prisma.$ReviewPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    userId: number
-    reviewId: number
+    userId: string
+    reviewId: string
   }, ExtArgs["result"]["reviewLike"]>
   composites: {}
 }
@@ -978,8 +928,8 @@ export interface Prisma__ReviewLikeClient<T, Null = never, ExtArgs extends runti
  * Fields of the ReviewLike model
  */
 export interface ReviewLikeFieldRefs {
-  readonly userId: Prisma.FieldRef<"ReviewLike", 'Int'>
-  readonly reviewId: Prisma.FieldRef<"ReviewLike", 'Int'>
+  readonly userId: Prisma.FieldRef<"ReviewLike", 'String'>
+  readonly reviewId: Prisma.FieldRef<"ReviewLike", 'String'>
 }
     
 

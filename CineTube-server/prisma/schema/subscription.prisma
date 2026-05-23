@@ -1,5 +1,5 @@
 model Subscription {
-  id              Int                @id @default(autoincrement())
+  id              String             @id @default(uuid())
   userId          String             @map("user_id") // এখানে String হবে, কারণ User.id ও String
   stripePaymentId String             @unique @map("stripe_payment_id")
   planType        PlanType           @map("plan_type")

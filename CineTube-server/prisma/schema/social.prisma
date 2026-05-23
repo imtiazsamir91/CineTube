@@ -1,7 +1,7 @@
 model Review {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   userId     String   @map("user_id")
-  mediaId    Int      @map("media_id")
+  mediaId    String   @map("media_id")
   rating     Int
   reviewText String   @map("review_text") @db.Text
   isSpoiler  Boolean  @default(false) @map("is_spoiler")
@@ -21,10 +21,10 @@ model Review {
 }
 
 model Comment {
-  id              Int      @id @default(autoincrement())
-  reviewId        Int      @map("review_id")
+  id              String   @id @default(uuid())
+  reviewId        String   @map("review_id")
   userId          String   @map("user_id")
-  parentCommentId Int?     @map("parent_comment_id")
+  parentCommentId String?  @map("parent_comment_id")
   commentText     String   @map("comment_text") @db.Text
   status          Status   @default(APPROVED)
   createdAt       DateTime @default(now()) @map("created_at")
@@ -43,7 +43,7 @@ model Comment {
 
 model ReviewLike {
   userId   String @map("user_id")
-  reviewId Int    @map("review_id")
+  reviewId String    @map("review_id")
 
   // Relations
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

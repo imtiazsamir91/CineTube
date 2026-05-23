@@ -1,4 +1,4 @@
-import { Media } from "../../../generated/prisma/client";
+import { Media, PricingType } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 interface MediaFilters {
@@ -15,13 +15,19 @@ const createMedia = async (payload: Media): Promise<Media> => {
             title: payload.title,
             synopsis: payload.synopsis,
             releaseYear: Number(payload.releaseYear),
-            director: payload.director,
-            cast: payload.cast,
-            streamingPlatforms: payload.streamingPlatforms,
-            pricingType: payload.pricingType,
-            videoLink: payload.videoLink,
-            posterUrl: payload.posterUrl
+            director: payload.director || null,
+            cast: payload.cast || null,
+            streamingPlatforms: payload.streamingPlatforms || null,
+            
+            pricingType: (payload.pricingType as PricingType) || PricingType.FREE,
+            videoLink: payload.videoLink || null,
+            posterUrl: payload.posterUrl || null
         },
+        
+        include: {
+            reviews: true,
+            watchlist: true
+        }
     });
     return media;
 };
@@ -36,7 +42,7 @@ const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null 
     if (loggedInUserId) {
         const activeSub = await prisma.subscription.findFirst({
             where: {
-                userId: loggedInUserId,
+                userId: String(loggedInUserId),
                 status: 'ACTIVE',
                 endDate: { gte: new Date() }
             }
@@ -94,7 +100,7 @@ const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null 
     return formattedData;
 };
 
-const getMediaById = async (id: number): Promise<any> => {
+const getMediaById = async (id: string): Promise<any> => {
     const media = await prisma.media.findUnique({
         where: { id },
         include: {
@@ -108,7 +114,7 @@ const getMediaById = async (id: number): Promise<any> => {
     return media;
 };
 
-const updateMedia = async (id: number, payload: Partial<Media>): Promise<Media> => {
+const updateMedia = async (id: string, payload: Partial<Media>): Promise<Media> => {
     const media = await prisma.media.update({
         where: { id },
         data: payload
@@ -116,7 +122,7 @@ const updateMedia = async (id: number, payload: Partial<Media>): Promise<Media> 
     return media;
 };
 
-const deleteMedia = async (id: number): Promise<Media> => {
+const deleteMedia = async (id: string): Promise<Media> => {
     const media = await prisma.media.delete({
         where: { id },
     });

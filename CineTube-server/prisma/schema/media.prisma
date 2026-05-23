@@ -1,5 +1,5 @@
 model Media {
-  id                 Int         @id @default(autoincrement())
+  id                 String      @id @default(uuid())
   title              String
   synopsis           String      @db.Text
   releaseYear        Int         @map("release_year")
@@ -22,7 +22,7 @@ model Media {
 
 model Watchlist {
   userId    String   @map("user_id")
-  mediaId   Int      @map("media_id")
+  mediaId   String      @map("media_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   // Relations

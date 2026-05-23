@@ -27,17 +27,15 @@ export type AggregateMedia = {
 }
 
 export type MediaAvgAggregateOutputType = {
-  id: number | null
   releaseYear: number | null
 }
 
 export type MediaSumAggregateOutputType = {
-  id: number | null
   releaseYear: number | null
 }
 
 export type MediaMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   synopsis: string | null
   releaseYear: number | null
@@ -51,7 +49,7 @@ export type MediaMinAggregateOutputType = {
 }
 
 export type MediaMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   title: string | null
   synopsis: string | null
   releaseYear: number | null
@@ -81,12 +79,10 @@ export type MediaCountAggregateOutputType = {
 
 
 export type MediaAvgAggregateInputType = {
-  id?: true
   releaseYear?: true
 }
 
 export type MediaSumAggregateInputType = {
-  id?: true
   releaseYear?: true
 }
 
@@ -220,7 +216,7 @@ export type MediaGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 export type MediaGroupByOutputType = {
-  id: number
+  id: string
   title: string
   synopsis: string
   releaseYear: number
@@ -257,7 +253,7 @@ export type MediaWhereInput = {
   AND?: Prisma.MediaWhereInput | Prisma.MediaWhereInput[]
   OR?: Prisma.MediaWhereInput[]
   NOT?: Prisma.MediaWhereInput | Prisma.MediaWhereInput[]
-  id?: Prisma.IntFilter<"Media"> | number
+  id?: Prisma.StringFilter<"Media"> | string
   title?: Prisma.StringFilter<"Media"> | string
   synopsis?: Prisma.StringFilter<"Media"> | string
   releaseYear?: Prisma.IntFilter<"Media"> | number
@@ -289,7 +285,7 @@ export type MediaOrderByWithRelationInput = {
 }
 
 export type MediaWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.MediaWhereInput | Prisma.MediaWhereInput[]
   OR?: Prisma.MediaWhereInput[]
   NOT?: Prisma.MediaWhereInput | Prisma.MediaWhereInput[]
@@ -330,7 +326,7 @@ export type MediaScalarWhereWithAggregatesInput = {
   AND?: Prisma.MediaScalarWhereWithAggregatesInput | Prisma.MediaScalarWhereWithAggregatesInput[]
   OR?: Prisma.MediaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MediaScalarWhereWithAggregatesInput | Prisma.MediaScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Media"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Media"> | string
   title?: Prisma.StringWithAggregatesFilter<"Media"> | string
   synopsis?: Prisma.StringWithAggregatesFilter<"Media"> | string
   releaseYear?: Prisma.IntWithAggregatesFilter<"Media"> | number
@@ -344,6 +340,7 @@ export type MediaScalarWhereWithAggregatesInput = {
 }
 
 export type MediaCreateInput = {
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -359,7 +356,7 @@ export type MediaCreateInput = {
 }
 
 export type MediaUncheckedCreateInput = {
-  id?: number
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -375,6 +372,7 @@ export type MediaUncheckedCreateInput = {
 }
 
 export type MediaUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -390,7 +388,7 @@ export type MediaUpdateInput = {
 }
 
 export type MediaUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -406,7 +404,7 @@ export type MediaUncheckedUpdateInput = {
 }
 
 export type MediaCreateManyInput = {
-  id?: number
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -420,6 +418,7 @@ export type MediaCreateManyInput = {
 }
 
 export type MediaUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -433,7 +432,7 @@ export type MediaUpdateManyMutationInput = {
 }
 
 export type MediaUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -461,7 +460,6 @@ export type MediaCountOrderByAggregateInput = {
 }
 
 export type MediaAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   releaseYear?: Prisma.SortOrder
 }
 
@@ -494,7 +492,6 @@ export type MediaMinOrderByAggregateInput = {
 }
 
 export type MediaSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   releaseYear?: Prisma.SortOrder
 }
 
@@ -503,8 +500,12 @@ export type MediaScalarRelationFilter = {
   isNot?: Prisma.MediaWhereInput
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type EnumPricingTypeFieldUpdateOperationsInput = {
@@ -540,6 +541,7 @@ export type MediaUpdateOneRequiredWithoutReviewsNestedInput = {
 }
 
 export type MediaCreateWithoutWatchlistInput = {
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -554,7 +556,7 @@ export type MediaCreateWithoutWatchlistInput = {
 }
 
 export type MediaUncheckedCreateWithoutWatchlistInput = {
-  id?: number
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -585,6 +587,7 @@ export type MediaUpdateToOneWithWhereWithoutWatchlistInput = {
 }
 
 export type MediaUpdateWithoutWatchlistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -599,7 +602,7 @@ export type MediaUpdateWithoutWatchlistInput = {
 }
 
 export type MediaUncheckedUpdateWithoutWatchlistInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -614,6 +617,7 @@ export type MediaUncheckedUpdateWithoutWatchlistInput = {
 }
 
 export type MediaCreateWithoutReviewsInput = {
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -628,7 +632,7 @@ export type MediaCreateWithoutReviewsInput = {
 }
 
 export type MediaUncheckedCreateWithoutReviewsInput = {
-  id?: number
+  id?: string
   title: string
   synopsis: string
   releaseYear: number
@@ -659,6 +663,7 @@ export type MediaUpdateToOneWithWhereWithoutReviewsInput = {
 }
 
 export type MediaUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -673,7 +678,7 @@ export type MediaUpdateWithoutReviewsInput = {
 }
 
 export type MediaUncheckedUpdateWithoutReviewsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   synopsis?: Prisma.StringFieldUpdateOperationsInput | string
   releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
@@ -802,7 +807,7 @@ export type $MediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     watchlist: Prisma.$WatchlistPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     title: string
     synopsis: string
     releaseYear: number
@@ -1238,7 +1243,7 @@ export interface Prisma__MediaClient<T, Null = never, ExtArgs extends runtime.Ty
  * Fields of the Media model
  */
 export interface MediaFieldRefs {
-  readonly id: Prisma.FieldRef<"Media", 'Int'>
+  readonly id: Prisma.FieldRef<"Media", 'String'>
   readonly title: Prisma.FieldRef<"Media", 'String'>
   readonly synopsis: Prisma.FieldRef<"Media", 'String'>
   readonly releaseYear: Prisma.FieldRef<"Media", 'Int'>

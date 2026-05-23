@@ -27,20 +27,16 @@ export type AggregateSubscription = {
 }
 
 export type SubscriptionAvgAggregateOutputType = {
-  id: number | null
-  userId: number | null
   amount: runtime.Decimal | null
 }
 
 export type SubscriptionSumAggregateOutputType = {
-  id: number | null
-  userId: number | null
   amount: runtime.Decimal | null
 }
 
 export type SubscriptionMinAggregateOutputType = {
-  id: number | null
-  userId: number | null
+  id: string | null
+  userId: string | null
   stripePaymentId: string | null
   planType: $Enums.PlanType | null
   amount: runtime.Decimal | null
@@ -50,8 +46,8 @@ export type SubscriptionMinAggregateOutputType = {
 }
 
 export type SubscriptionMaxAggregateOutputType = {
-  id: number | null
-  userId: number | null
+  id: string | null
+  userId: string | null
   stripePaymentId: string | null
   planType: $Enums.PlanType | null
   amount: runtime.Decimal | null
@@ -74,14 +70,10 @@ export type SubscriptionCountAggregateOutputType = {
 
 
 export type SubscriptionAvgAggregateInputType = {
-  id?: true
-  userId?: true
   amount?: true
 }
 
 export type SubscriptionSumAggregateInputType = {
-  id?: true
-  userId?: true
   amount?: true
 }
 
@@ -206,8 +198,8 @@ export type SubscriptionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 export type SubscriptionGroupByOutputType = {
-  id: number
-  userId: number
+  id: string
+  userId: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal
@@ -240,8 +232,8 @@ export type SubscriptionWhereInput = {
   AND?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
   OR?: Prisma.SubscriptionWhereInput[]
   NOT?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
-  id?: Prisma.IntFilter<"Subscription"> | number
-  userId?: Prisma.IntFilter<"Subscription"> | number
+  id?: Prisma.StringFilter<"Subscription"> | string
+  userId?: Prisma.StringFilter<"Subscription"> | string
   stripePaymentId?: Prisma.StringFilter<"Subscription"> | string
   planType?: Prisma.EnumPlanTypeFilter<"Subscription"> | $Enums.PlanType
   amount?: Prisma.DecimalFilter<"Subscription"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -264,12 +256,12 @@ export type SubscriptionOrderByWithRelationInput = {
 }
 
 export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   stripePaymentId?: string
   AND?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
   OR?: Prisma.SubscriptionWhereInput[]
   NOT?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
-  userId?: Prisma.IntFilter<"Subscription"> | number
+  userId?: Prisma.StringFilter<"Subscription"> | string
   planType?: Prisma.EnumPlanTypeFilter<"Subscription"> | $Enums.PlanType
   amount?: Prisma.DecimalFilter<"Subscription"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumSubscriptionStatusFilter<"Subscription"> | $Enums.SubscriptionStatus
@@ -298,8 +290,8 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   AND?: Prisma.SubscriptionScalarWhereWithAggregatesInput | Prisma.SubscriptionScalarWhereWithAggregatesInput[]
   OR?: Prisma.SubscriptionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SubscriptionScalarWhereWithAggregatesInput | Prisma.SubscriptionScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
-  userId?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
+  userId?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   stripePaymentId?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   planType?: Prisma.EnumPlanTypeWithAggregatesFilter<"Subscription"> | $Enums.PlanType
   amount?: Prisma.DecimalWithAggregatesFilter<"Subscription"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -309,6 +301,7 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
 }
 
 export type SubscriptionCreateInput = {
+  id?: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -319,8 +312,8 @@ export type SubscriptionCreateInput = {
 }
 
 export type SubscriptionUncheckedCreateInput = {
-  id?: number
-  userId: number
+  id?: string
+  userId: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -330,6 +323,7 @@ export type SubscriptionUncheckedCreateInput = {
 }
 
 export type SubscriptionUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -340,8 +334,8 @@ export type SubscriptionUpdateInput = {
 }
 
 export type SubscriptionUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -351,8 +345,8 @@ export type SubscriptionUncheckedUpdateInput = {
 }
 
 export type SubscriptionCreateManyInput = {
-  id?: number
-  userId: number
+  id?: string
+  userId: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -362,6 +356,7 @@ export type SubscriptionCreateManyInput = {
 }
 
 export type SubscriptionUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -371,8 +366,8 @@ export type SubscriptionUpdateManyMutationInput = {
 }
 
 export type SubscriptionUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -403,8 +398,6 @@ export type SubscriptionCountOrderByAggregateInput = {
 }
 
 export type SubscriptionAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
 }
 
@@ -431,8 +424,6 @@ export type SubscriptionMinOrderByAggregateInput = {
 }
 
 export type SubscriptionSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
 }
 
@@ -495,6 +486,7 @@ export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
 }
 
 export type SubscriptionCreateWithoutUserInput = {
+  id?: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -504,7 +496,7 @@ export type SubscriptionCreateWithoutUserInput = {
 }
 
 export type SubscriptionUncheckedCreateWithoutUserInput = {
-  id?: number
+  id?: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -543,8 +535,8 @@ export type SubscriptionScalarWhereInput = {
   AND?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
   OR?: Prisma.SubscriptionScalarWhereInput[]
   NOT?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
-  id?: Prisma.IntFilter<"Subscription"> | number
-  userId?: Prisma.IntFilter<"Subscription"> | number
+  id?: Prisma.StringFilter<"Subscription"> | string
+  userId?: Prisma.StringFilter<"Subscription"> | string
   stripePaymentId?: Prisma.StringFilter<"Subscription"> | string
   planType?: Prisma.EnumPlanTypeFilter<"Subscription"> | $Enums.PlanType
   amount?: Prisma.DecimalFilter<"Subscription"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -554,7 +546,7 @@ export type SubscriptionScalarWhereInput = {
 }
 
 export type SubscriptionCreateManyUserInput = {
-  id?: number
+  id?: string
   stripePaymentId: string
   planType: $Enums.PlanType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -564,6 +556,7 @@ export type SubscriptionCreateManyUserInput = {
 }
 
 export type SubscriptionUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -573,7 +566,7 @@ export type SubscriptionUpdateWithoutUserInput = {
 }
 
 export type SubscriptionUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -583,7 +576,7 @@ export type SubscriptionUncheckedUpdateWithoutUserInput = {
 }
 
 export type SubscriptionUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   stripePaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   planType?: Prisma.EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -658,8 +651,8 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    userId: number
+    id: string
+    userId: string
     stripePaymentId: string
     planType: $Enums.PlanType
     amount: runtime.Decimal
@@ -1090,8 +1083,8 @@ export interface Prisma__SubscriptionClient<T, Null = never, ExtArgs extends run
  * Fields of the Subscription model
  */
 export interface SubscriptionFieldRefs {
-  readonly id: Prisma.FieldRef<"Subscription", 'Int'>
-  readonly userId: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly id: Prisma.FieldRef<"Subscription", 'String'>
+  readonly userId: Prisma.FieldRef<"Subscription", 'String'>
   readonly stripePaymentId: Prisma.FieldRef<"Subscription", 'String'>
   readonly planType: Prisma.FieldRef<"Subscription", 'PlanType'>
   readonly amount: Prisma.FieldRef<"Subscription", 'Decimal'>
