@@ -7,9 +7,10 @@ import { any } from "better-auth";
 // Custom Request Interface matching String (UUID) pattern
 interface CustomRequest extends Request {
     user?: {
-        id: string; 
+        userId: string;
+        id: string;
         role?: string;
-        email?: string;
+        email?: string | null;
     }
 }
 
