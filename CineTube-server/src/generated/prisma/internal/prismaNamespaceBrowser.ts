@@ -57,6 +57,7 @@ export const ModelName = {
   Verification: 'Verification',
   Media: 'Media',
   Watchlist: 'Watchlist',
+  WatchHistory: 'WatchHistory',
   Review: 'Review',
   Comment: 'Comment',
   ReviewLike: 'ReviewLike',
@@ -161,6 +162,18 @@ export const WatchlistScalarFieldEnum = {
 } as const
 
 export type WatchlistScalarFieldEnum = (typeof WatchlistScalarFieldEnum)[keyof typeof WatchlistScalarFieldEnum]
+
+
+export const WatchHistoryScalarFieldEnum = {
+  userId: 'userId',
+  mediaId: 'mediaId',
+  currentPosition: 'currentPosition',
+  duration: 'duration',
+  isCompleted: 'isCompleted',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WatchHistoryScalarFieldEnum = (typeof WatchHistoryScalarFieldEnum)[keyof typeof WatchHistoryScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {

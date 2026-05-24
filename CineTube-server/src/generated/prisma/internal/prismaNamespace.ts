@@ -390,6 +390,7 @@ export const ModelName = {
   Verification: 'Verification',
   Media: 'Media',
   Watchlist: 'Watchlist',
+  WatchHistory: 'WatchHistory',
   Review: 'Review',
   Comment: 'Comment',
   ReviewLike: 'ReviewLike',
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "media" | "watchlist" | "review" | "comment" | "reviewLike" | "subscription"
+    modelProps: "user" | "session" | "account" | "verification" | "media" | "watchlist" | "watchHistory" | "review" | "comment" | "reviewLike" | "subscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -857,6 +858,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WatchHistory: {
+      payload: Prisma.$WatchHistoryPayload<ExtArgs>
+      fields: Prisma.WatchHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WatchHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WatchHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.WatchHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WatchHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.WatchHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.WatchHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.WatchHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WatchHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.WatchHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        update: {
+          args: Prisma.WatchHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.WatchHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WatchHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WatchHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.WatchHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WatchHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.WatchHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWatchHistory>
+        }
+        groupBy: {
+          args: Prisma.WatchHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WatchHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WatchHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WatchHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
     Review: {
       payload: Prisma.$ReviewPayload<ExtArgs>
       fields: Prisma.ReviewFieldRefs
@@ -1276,6 +1351,18 @@ export const WatchlistScalarFieldEnum = {
 export type WatchlistScalarFieldEnum = (typeof WatchlistScalarFieldEnum)[keyof typeof WatchlistScalarFieldEnum]
 
 
+export const WatchHistoryScalarFieldEnum = {
+  userId: 'userId',
+  mediaId: 'mediaId',
+  currentPosition: 'currentPosition',
+  duration: 'duration',
+  isCompleted: 'isCompleted',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WatchHistoryScalarFieldEnum = (typeof WatchHistoryScalarFieldEnum)[keyof typeof WatchHistoryScalarFieldEnum]
+
+
 export const ReviewScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1604,6 +1691,7 @@ export type GlobalOmitConfig = {
   verification?: Prisma.VerificationOmit
   media?: Prisma.MediaOmit
   watchlist?: Prisma.WatchlistOmit
+  watchHistory?: Prisma.WatchHistoryOmit
   review?: Prisma.ReviewOmit
   comment?: Prisma.CommentOmit
   reviewLike?: Prisma.ReviewLikeOmit

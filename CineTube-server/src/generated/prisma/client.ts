@@ -72,6 +72,11 @@ export type Media = Prisma.MediaModel
  */
 export type Watchlist = Prisma.WatchlistModel
 /**
+ * Model WatchHistory
+ * 
+ */
+export type WatchHistory = Prisma.WatchHistoryModel
+/**
  * Model Review
  * 
  */

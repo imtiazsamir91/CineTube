@@ -266,6 +266,7 @@ export type MediaWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
   watchlist?: Prisma.WatchlistListRelationFilter
+  watchHistory?: Prisma.WatchHistoryListRelationFilter
 }
 
 export type MediaOrderByWithRelationInput = {
@@ -282,6 +283,7 @@ export type MediaOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   watchlist?: Prisma.WatchlistOrderByRelationAggregateInput
+  watchHistory?: Prisma.WatchHistoryOrderByRelationAggregateInput
 }
 
 export type MediaWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type MediaWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
   watchlist?: Prisma.WatchlistListRelationFilter
+  watchHistory?: Prisma.WatchHistoryListRelationFilter
 }, "id">
 
 export type MediaOrderByWithAggregationInput = {
@@ -353,6 +356,7 @@ export type MediaCreateInput = {
   createdAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUncheckedCreateInput = {
@@ -369,6 +373,7 @@ export type MediaUncheckedCreateInput = {
   createdAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUpdateInput = {
@@ -385,6 +390,7 @@ export type MediaUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateInput = {
@@ -401,6 +407,7 @@ export type MediaUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaCreateManyInput = {
@@ -526,6 +533,20 @@ export type MediaUpdateOneRequiredWithoutWatchlistNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MediaUpdateToOneWithWhereWithoutWatchlistInput, Prisma.MediaUpdateWithoutWatchlistInput>, Prisma.MediaUncheckedUpdateWithoutWatchlistInput>
 }
 
+export type MediaCreateNestedOneWithoutWatchHistoryInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutWatchHistoryInput, Prisma.MediaUncheckedCreateWithoutWatchHistoryInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutWatchHistoryInput
+  connect?: Prisma.MediaWhereUniqueInput
+}
+
+export type MediaUpdateOneRequiredWithoutWatchHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutWatchHistoryInput, Prisma.MediaUncheckedCreateWithoutWatchHistoryInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutWatchHistoryInput
+  upsert?: Prisma.MediaUpsertWithoutWatchHistoryInput
+  connect?: Prisma.MediaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaUpdateToOneWithWhereWithoutWatchHistoryInput, Prisma.MediaUpdateWithoutWatchHistoryInput>, Prisma.MediaUncheckedUpdateWithoutWatchHistoryInput>
+}
+
 export type MediaCreateNestedOneWithoutReviewsInput = {
   create?: Prisma.XOR<Prisma.MediaCreateWithoutReviewsInput, Prisma.MediaUncheckedCreateWithoutReviewsInput>
   connectOrCreate?: Prisma.MediaCreateOrConnectWithoutReviewsInput
@@ -553,6 +574,7 @@ export type MediaCreateWithoutWatchlistInput = {
   posterUrl?: string | null
   createdAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUncheckedCreateWithoutWatchlistInput = {
@@ -568,6 +590,7 @@ export type MediaUncheckedCreateWithoutWatchlistInput = {
   posterUrl?: string | null
   createdAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type MediaCreateOrConnectWithoutWatchlistInput = {
@@ -599,6 +622,7 @@ export type MediaUpdateWithoutWatchlistInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutWatchlistInput = {
@@ -614,6 +638,87 @@ export type MediaUncheckedUpdateWithoutWatchlistInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
+}
+
+export type MediaCreateWithoutWatchHistoryInput = {
+  id?: string
+  title: string
+  synopsis: string
+  releaseYear: number
+  director?: string | null
+  cast?: string | null
+  streamingPlatforms?: string | null
+  pricingType?: $Enums.PricingType
+  videoLink?: string | null
+  posterUrl?: string | null
+  createdAt?: Date | string
+  reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
+  watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
+}
+
+export type MediaUncheckedCreateWithoutWatchHistoryInput = {
+  id?: string
+  title: string
+  synopsis: string
+  releaseYear: number
+  director?: string | null
+  cast?: string | null
+  streamingPlatforms?: string | null
+  pricingType?: $Enums.PricingType
+  videoLink?: string | null
+  posterUrl?: string | null
+  createdAt?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
+  watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
+}
+
+export type MediaCreateOrConnectWithoutWatchHistoryInput = {
+  where: Prisma.MediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaCreateWithoutWatchHistoryInput, Prisma.MediaUncheckedCreateWithoutWatchHistoryInput>
+}
+
+export type MediaUpsertWithoutWatchHistoryInput = {
+  update: Prisma.XOR<Prisma.MediaUpdateWithoutWatchHistoryInput, Prisma.MediaUncheckedUpdateWithoutWatchHistoryInput>
+  create: Prisma.XOR<Prisma.MediaCreateWithoutWatchHistoryInput, Prisma.MediaUncheckedCreateWithoutWatchHistoryInput>
+  where?: Prisma.MediaWhereInput
+}
+
+export type MediaUpdateToOneWithWhereWithoutWatchHistoryInput = {
+  where?: Prisma.MediaWhereInput
+  data: Prisma.XOR<Prisma.MediaUpdateWithoutWatchHistoryInput, Prisma.MediaUncheckedUpdateWithoutWatchHistoryInput>
+}
+
+export type MediaUpdateWithoutWatchHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  synopsis?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
+  director?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cast?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamingPlatforms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
+  videoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
+  watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
+}
+
+export type MediaUncheckedUpdateWithoutWatchHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  synopsis?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseYear?: Prisma.IntFieldUpdateOperationsInput | number
+  director?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cast?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streamingPlatforms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
+  videoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
+  watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaCreateWithoutReviewsInput = {
@@ -629,6 +734,7 @@ export type MediaCreateWithoutReviewsInput = {
   posterUrl?: string | null
   createdAt?: Date | string
   watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
 }
 
 export type MediaUncheckedCreateWithoutReviewsInput = {
@@ -644,6 +750,7 @@ export type MediaUncheckedCreateWithoutReviewsInput = {
   posterUrl?: string | null
   createdAt?: Date | string
   watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
+  watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type MediaCreateOrConnectWithoutReviewsInput = {
@@ -675,6 +782,7 @@ export type MediaUpdateWithoutReviewsInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutReviewsInput = {
@@ -690,6 +798,7 @@ export type MediaUncheckedUpdateWithoutReviewsInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
+  watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 
@@ -700,11 +809,13 @@ export type MediaUncheckedUpdateWithoutReviewsInput = {
 export type MediaCountOutputType = {
   reviews: number
   watchlist: number
+  watchHistory: number
 }
 
 export type MediaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | MediaCountOutputTypeCountReviewsArgs
   watchlist?: boolean | MediaCountOutputTypeCountWatchlistArgs
+  watchHistory?: boolean | MediaCountOutputTypeCountWatchHistoryArgs
 }
 
 /**
@@ -731,6 +842,13 @@ export type MediaCountOutputTypeCountWatchlistArgs<ExtArgs extends runtime.Types
   where?: Prisma.WatchlistWhereInput
 }
 
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeCountWatchHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WatchHistoryWhereInput
+}
+
 
 export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -746,6 +864,7 @@ export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   reviews?: boolean | Prisma.Media$reviewsArgs<ExtArgs>
   watchlist?: boolean | Prisma.Media$watchlistArgs<ExtArgs>
+  watchHistory?: boolean | Prisma.Media$watchHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["media"]>
 
@@ -795,6 +914,7 @@ export type MediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type MediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.Media$reviewsArgs<ExtArgs>
   watchlist?: boolean | Prisma.Media$watchlistArgs<ExtArgs>
+  watchHistory?: boolean | Prisma.Media$watchHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MediaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -805,6 +925,7 @@ export type $MediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     watchlist: Prisma.$WatchlistPayload<ExtArgs>[]
+    watchHistory: Prisma.$WatchHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1214,6 +1335,7 @@ export interface Prisma__MediaClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reviews<T extends Prisma.Media$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   watchlist<T extends Prisma.Media$watchlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$watchlistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WatchlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  watchHistory<T extends Prisma.Media$watchHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$watchHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WatchHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1692,6 +1814,30 @@ export type Media$watchlistArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.WatchlistScalarFieldEnum | Prisma.WatchlistScalarFieldEnum[]
+}
+
+/**
+ * Media.watchHistory
+ */
+export type Media$watchHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WatchHistory
+   */
+  select?: Prisma.WatchHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WatchHistory
+   */
+  omit?: Prisma.WatchHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WatchHistoryInclude<ExtArgs> | null
+  where?: Prisma.WatchHistoryWhereInput
+  orderBy?: Prisma.WatchHistoryOrderByWithRelationInput | Prisma.WatchHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.WatchHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WatchHistoryScalarFieldEnum | Prisma.WatchHistoryScalarFieldEnum[]
 }
 
 /**
