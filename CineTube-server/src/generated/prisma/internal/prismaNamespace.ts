@@ -1406,8 +1406,12 @@ export const SubscriptionScalarFieldEnum = {
   planType: 'planType',
   amount: 'amount',
   status: 'status',
+  activationOtp: 'activationOtp',
+  otpExpiresAt: 'otpExpiresAt',
   startDate: 'startDate',
-  endDate: 'endDate'
+  endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]

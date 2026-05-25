@@ -1,56 +1,38 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import ejs from "ejs";
-// import status from "http-status";
-// import nodemailer from "nodemailer";
-// import path from "path";
-// import { envVars } from "../config/env";
-// import AppError from "../errorHelpers/AppError";
+import nodemailer from "nodemailer";
+// 🎯 ফিক্স ১: আপনার ফাইল থেকে নিখুঁতভাবে envVars অবজেক্টটি ইমপোর্ট করা হলো
+import { envVars } from "../config/env"; 
 
-// // const transporter = nodemailer.createTransport({
-// //     host : envVars.EMAIL_SENDER.SMTP_HOST,
-// //     secure: true,
-// //     auth: {
-// //         user: envVars.EMAIL_SENDER.SMTP_USER,
-// //         pass: envVars.EMAIL_SENDER.SMTP_PASS
-// //     },
-// //     port: Number(envVars.EMAIL_SENDER.SMTP_PORT)
-// // })
+// 🎯 ফিক্স ২: envVars.EMAIL_SENDER থেকে সব ভ্যালু প্রফেশনালি রিড করা হলো
+const transporter = nodemailer.createTransport({
+  host: envVars.EMAIL_SENDER?.SMTP_HOST || "smtp.gmail.com", 
+  port: Number(envVars.EMAIL_SENDER?.SMTP_PORT) || 587,
+  secure: envVars.NODE_ENV === "production", // প্রোডাকশনে ট্রু, লোকালি ফলস
+  auth: {
+    user: envVars.EMAIL_SENDER?.SMTP_USER, // আপনার .env এর EMAIL_SENDER_SMTP_USER
+    pass: envVars.EMAIL_SENDER?.SMTP_PASS, // আপনার .env এর EMAIL_SENDER_SMTP_PASS
+  },
+});
 
-// interface SendEmailOptions {
-//     to: string;
-//     subject: string;
-//     templateName: string;
-//     templateData: Record<string, any>;
-//     attachments?: {
-//         filename: string;
-//         content: Buffer | string;
-//         contentType: string;
-//     }[]
-// }
+interface TEmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+}
 
-// export const sendEmail = async ({subject, templateData, templateName, to, attachments} : SendEmailOptions) => {
-   
-    
-//     try {
-//         const templatePath = path.resolve(process.cwd(), `src/app/templates/${templateName}.ejs`);
+export const sendEmail = async (options: TEmailOptions) => {
+  try {
+    const mailOptions = {
+      from: `"CineTube Support" <${envVars.EMAIL_SENDER?.SMTP_FROM || envVars.EMAIL_SENDER?.SMTP_USER}>`,
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+    };
 
-//         const html = await ejs.renderFile(templatePath, templateData);
-
-//         const info = await transporter.sendMail({
-//             from: envVars.EMAIL_SENDER.SMTP_FROM,
-//             to : to,
-//             subject : subject,
-//             html : html,
-//             attachments: attachments?.map((attachment) => ({
-//                 filename: attachment.filename,
-//                 content: attachment.content,
-//                 contentType: attachment.contentType,
-//             }))
-//         })
-
-//         console.log(`Email sent to ${to} : ${info.messageId}`);
-//     } catch (error : any) {
-//         console.log("Email Sending Error", error.message);
-//         throw new AppError(status.INTERNAL_SERVER_ERROR, "Failed to send email");
-//     }
-// }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("=== [Email Sent Successfully] ===", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Email Sending Error inside utility:", error);
+    throw new Error("Failed to send email");
+  }
+};
