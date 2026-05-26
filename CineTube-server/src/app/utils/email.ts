@@ -1,38 +1,148 @@
-import nodemailer from "nodemailer";
-// 🎯 ফিক্স ১: আপনার ফাইল থেকে নিখুঁতভাবে envVars অবজেক্টটি ইমপোর্ট করা হলো
-import { envVars } from "../config/env"; 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-// 🎯 ফিক্স ২: envVars.EMAIL_SENDER থেকে সব ভ্যালু প্রফেশনালি রিড করা হলো
+import ejs from "ejs";
+import status from "http-status";
+import nodemailer from "nodemailer";
+import path from "path";
+import fs from "fs";
+
+import { envVars } from "../config/env";
+import AppError from "../errorHelpers/AppError";
+
+// ==========================
+// SMTP CONFIG
+// ==========================
+const port = Number(envVars.EMAIL_SENDER.SMTP_PORT);
+
+if (!port) {
+  throw new Error("SMTP_PORT is not defined in env");
+}
+
 const transporter = nodemailer.createTransport({
-  host: envVars.EMAIL_SENDER?.SMTP_HOST || "smtp.gmail.com", 
-  port: Number(envVars.EMAIL_SENDER?.SMTP_PORT) || 587,
-  secure: envVars.NODE_ENV === "production", // প্রোডাকশনে ট্রু, লোকালি ফলস
+  host: envVars.EMAIL_SENDER.SMTP_HOST,
+  port,
+  secure: port === 465,
   auth: {
-    user: envVars.EMAIL_SENDER?.SMTP_USER, // আপনার .env এর EMAIL_SENDER_SMTP_USER
-    pass: envVars.EMAIL_SENDER?.SMTP_PASS, // আপনার .env এর EMAIL_SENDER_SMTP_PASS
+    user: envVars.EMAIL_SENDER.SMTP_USER,
+    pass: envVars.EMAIL_SENDER.SMTP_PASS,
   },
 });
 
-interface TEmailOptions {
+// ==========================
+// VERIFY SMTP CONNECTION
+// ==========================
+transporter.verify((error) => {
+  if (error) {
+    console.log("❌ SMTP CONNECTION ERROR =>", error);
+  } else {
+    console.log("✅ SMTP READY");
+  }
+});
+
+// ==========================
+// TYPES
+// ==========================
+interface SendEmailOptions {
   to: string;
   subject: string;
-  html: string;
+  templateName: string;
+  templateData?: Record<string, any>;
+  attachments?: {
+    filename: string;
+    content: Buffer | string;
+    contentType: string;
+  }[];
 }
 
-export const sendEmail = async (options: TEmailOptions) => {
+// ==========================
+// SEND EMAIL FUNCTION
+// ==========================
+export const sendEmail = async ({
+  subject,
+  templateData = {},
+  templateName,
+  to,
+  attachments,
+}: SendEmailOptions) => {
   try {
-    const mailOptions = {
-      from: `"CineTube Support" <${envVars.EMAIL_SENDER?.SMTP_FROM || envVars.EMAIL_SENDER?.SMTP_USER}>`,
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
+    console.log("=== EMAIL DEBUG ===", {
+      to,
+      subject,
+      templateName,
+      templateData,
+      attachments,
+    });
+
+    // ==========================
+    // VALIDATION
+    // ==========================
+    if (!to) throw new Error("Email 'to' is required");
+    if (!subject) throw new Error("Email 'subject' is required");
+    if (!templateName) throw new Error("Email 'templateName' is required");
+
+    // ==========================
+    // TEMPLATE PATH
+    // ==========================
+    const templatePath = path.resolve(
+      process.cwd(),
+      `src/app/templates/${templateName}.ejs`
+    );
+
+    // check file exists
+    if (!fs.existsSync(templatePath)) {
+      throw new Error(`Email template not found: ${templateName}`);
+    }
+
+    console.log("📄 TEMPLATE PATH =>", templatePath);
+
+    // ==========================
+    // RENDER HTML
+    // ==========================
+    const html = await ejs.renderFile(templatePath, templateData);
+
+    if (!html) {
+      throw new Error("Failed to render email template");
+    }
+
+    // ==========================
+    // MAIL PAYLOAD
+    // ==========================
+    const mailPayload: nodemailer.SendMailOptions = {
+      from: `"CineTube Support" <${
+        envVars.EMAIL_SENDER.SMTP_FROM ||
+        envVars.EMAIL_SENDER.SMTP_USER
+      }>`,
+      to,
+      subject,
+      html,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("=== [Email Sent Successfully] ===", info.messageId);
+    // ==========================
+    // ATTACHMENTS SAFE HANDLING
+    // ==========================
+    if (Array.isArray(attachments) && attachments.length > 0) {
+      mailPayload.attachments = attachments.map((a) => ({
+        filename: a.filename,
+        content: a.content,
+        contentType: a.contentType,
+      }));
+    }
+
+    // ==========================
+    // SEND EMAIL
+    // ==========================
+    const info = await transporter.sendMail(mailPayload);
+
+    console.log(`✅ Email sent successfully to ${to}`);
+    console.log("📨 Message ID =>", info.messageId);
+
     return info;
-  } catch (error) {
-    console.error("Email Sending Error inside utility:", error);
-    throw new Error("Failed to send email");
+  } catch (error: any) {
+    console.log("❌ Email Sending Error =>", error);
+
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
+      error.message || "Failed to send email"
+    );
   }
 };

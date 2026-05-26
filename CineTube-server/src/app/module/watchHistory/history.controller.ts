@@ -4,7 +4,7 @@ import { watchHistoryService } from "./history.service";
 
 const updateProgress = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user!.userId; // আপনার সেই সলিড মিডলওয়্যার থেকে আসছে
+    const userId = req.user!.userId; 
     const { mediaId, currentPosition, duration } = req.body;
 
     const result = await watchHistoryService.updateProgress(
