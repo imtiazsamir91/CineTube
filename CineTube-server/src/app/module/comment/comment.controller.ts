@@ -67,9 +67,62 @@ const deleteComment = async (req: Request, res: Response, next: NextFunction) =>
     });
   }
 };
+const updateComment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId; 
+    const { commentId } = req.params;
+    const { commentText } = req.body;
+
+    if (!commentText) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "Updated comment text is required",
+      });
+    }
+
+    const result = await commentService.updateComment(userId, commentId as string , commentText);
+
+    res.status(httpStatus.OK).json({
+      success: true,
+      message: "Comment updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update comment"
+    });
+  }
+};
+
+
+const toggleCommentStatus = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { commentId } = req.params;
+    const { status } = req.body; 
+    if (!status || !["APPROVED", "BLOCKED", "PENDING"].includes(status)) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    const result = await commentService.toggleCommentStatus(commentId as string, status);
+
+    res.status(httpStatus.OK).json({
+      success: true,
+      message: `Comment status updated to ${status} successfully`,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const commentController = {
   createComment,
   getReviewComments,
   deleteComment,
+  updateComment,
+  toggleCommentStatus,
 };

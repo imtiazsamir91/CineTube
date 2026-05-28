@@ -1,6 +1,13 @@
 import { prisma } from "../../lib/prisma";
 
 
+enum LocalStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  UNPUBLISHED = "UNPUBLISHED"
+}
+
+
 const createComment = async (payload: {
   reviewId: string;
   userId: string;
@@ -9,7 +16,6 @@ const createComment = async (payload: {
 }) => {
   const { reviewId, userId, commentText, parentCommentId } = payload;
 
- 
   if (parentCommentId) {
     const parentComment = await prisma.comment.findUnique({
       where: { id: parentCommentId },
@@ -23,7 +29,7 @@ const createComment = async (payload: {
       userId,
       commentText,
       parentCommentId,
-      status: "APPROVED", 
+      status: LocalStatus.APPROVED as any, 
     },
     include: {
       user: {
@@ -35,11 +41,10 @@ const createComment = async (payload: {
 
 
 const getReviewCommentsTree = async (reviewId: string) => {
-  
   const allComments = await prisma.comment.findMany({
     where: {
       reviewId,
-      status: "APPROVED",
+      status: LocalStatus.APPROVED as any,
     },
     include: {
       user: {
@@ -51,25 +56,20 @@ const getReviewCommentsTree = async (reviewId: string) => {
     },
   });
 
-  
   const commentMap: Record<string, any> = {};
   const rootComments: any[] = [];
-
 
   allComments.forEach((comment) => {
     commentMap[comment.id] = { ...comment, replies: [] };
   });
 
-  
   allComments.forEach((comment) => {
     const mappedComment = commentMap[comment.id];
     if (comment.parentCommentId) {
-      
       if (commentMap[comment.parentCommentId]) {
         commentMap[comment.parentCommentId].replies.push(mappedComment);
       }
     } else {
-      
       rootComments.push(mappedComment);
     }
   });
@@ -84,12 +84,48 @@ const deleteComment = async (userId: string, commentId: string) => {
   if (!comment) throw new Error("Comment not found");
   if (comment.userId !== userId) throw new Error("You are not authorized to delete this comment");
 
-
   return await prisma.comment.delete({ where: { id: commentId } });
+};
+
+
+const updateComment = async (userId: string, commentId: string, updatedText: string) => {
+  const comment = await prisma.comment.findUnique({ where: { id: commentId } });
+
+  if (!comment) throw new Error("Comment not found");
+  if (comment.userId !== userId) throw new Error("You are not authorized to edit this comment");
+  
+  
+  if ((comment.status as string) === LocalStatus.UNPUBLISHED) {
+    throw new Error("Cannot edit an unpublished or hidden comment");
+  }
+
+  return await prisma.comment.update({
+    where: { id: commentId },
+    data: { commentText: updatedText },
+    include: {
+      user: {
+        select: { id: true, name: true }
+      }
+    }
+  });
+};
+
+
+const toggleCommentStatus = async (commentId: string, status: any) => {
+  const comment = await prisma.comment.findUnique({ where: { id: commentId } });
+
+  if (!comment) throw new Error("Comment not found");
+
+  return await prisma.comment.update({
+    where: { id: commentId },
+    data: { status }
+  });
 };
 
 export const commentService = {
   createComment,
   getReviewCommentsTree,
   deleteComment,
+  updateComment,
+  toggleCommentStatus,
 };

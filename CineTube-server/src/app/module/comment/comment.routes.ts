@@ -13,4 +13,9 @@ router.get("/review/:reviewId", commentController.getReviewComments);
 
 router.delete("/:commentId", authMiddleware, commentController.deleteComment);
 
+router.patch("/:commentId", authMiddleware, commentController.updateComment);
+
+
+router.patch("/:commentId/status", authMiddleware, commentController.toggleCommentStatus);
+
 export const commentRoutes = router;
