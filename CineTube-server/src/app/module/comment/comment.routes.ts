@@ -5,17 +5,17 @@ import { commentController } from "./comment.controller";
 const router = express.Router();
 
 
-router.post("/", authMiddleware, commentController.createComment);
+router.post("/", authMiddleware(), commentController.createComment);
 
 
 router.get("/review/:reviewId", commentController.getReviewComments);
 
 
-router.delete("/:commentId", authMiddleware, commentController.deleteComment);
+router.delete("/:commentId", authMiddleware(), commentController.deleteComment);
 
-router.patch("/:commentId", authMiddleware, commentController.updateComment);
+router.patch("/:commentId", authMiddleware(), commentController.updateComment);
 
 
-router.patch("/:commentId/status", authMiddleware, commentController.toggleCommentStatus);
+router.patch("/:commentId/status", authMiddleware("ADMIN"), commentController.toggleCommentStatus);
 
 export const commentRoutes = router;
