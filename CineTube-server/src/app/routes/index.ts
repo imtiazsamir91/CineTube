@@ -6,6 +6,7 @@ import { watchHistoryRoutes } from "../module/watchHistory/history.route";
 import { subscriptionRoutes } from "../module/subscription/subscription.route";
 import { reviewRoutes } from "../module/review/review.routes";
 import { commentRoutes } from "../module/comment/comment.routes";
+import { notificationRoutes } from "../module/notification/notification.routes";
 
 const router = Router();
 router.use("/auth", AuthRoutes);
@@ -15,6 +16,7 @@ router.use("/watch-history", watchHistoryRoutes);
 router.use("/subscription", subscriptionRoutes);
 router.use("/review", reviewRoutes);
 router.use("/comment", commentRoutes);
+router.use("/notification", notificationRoutes);
 
 
 

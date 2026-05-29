@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-
+import { notificationService } from "../notification/notification.service"; 
 
 enum LocalStatus {
   PENDING = "PENDING",
@@ -16,14 +16,23 @@ const createComment = async (payload: {
 }) => {
   const { reviewId, userId, commentText, parentCommentId } = payload;
 
+  
+  const commenter = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true }
+  });
+
+  let parentComment = null;
+
   if (parentCommentId) {
-    const parentComment = await prisma.comment.findUnique({
+    parentComment = await prisma.comment.findUnique({
       where: { id: parentCommentId },
     });
     if (!parentComment) throw new Error("Parent comment not found");
   }
 
-  return await prisma.comment.create({
+
+  const newComment = await prisma.comment.create({
     data: {
       reviewId,
       userId,
@@ -37,6 +46,24 @@ const createComment = async (payload: {
       },
     },
   });
+
+  
+  if (parentCommentId && parentComment) {
+    
+    if (parentComment.userId !== userId) {
+      await notificationService.createNotification({
+        receiverId: parentComment.userId, 
+        senderId: userId,                 
+        title: "New Reply on Your Comment",
+        message: `${commenter?.name || "Someone"} replied: "${commentText.substring(0, 25)}..."`,
+        type: "REPLY",
+        link: `/movies/${reviewId}`,    
+      });
+      console.log("🔔 Notification triggered and saved to DB!");
+    }
+  }
+
+  return newComment;
 };
 
 
@@ -93,7 +120,6 @@ const updateComment = async (userId: string, commentId: string, updatedText: str
 
   if (!comment) throw new Error("Comment not found");
   if (comment.userId !== userId) throw new Error("You are not authorized to edit this comment");
-  
   
   if ((comment.status as string) === LocalStatus.UNPUBLISHED) {
     throw new Error("Cannot edit an unpublished or hidden comment");
