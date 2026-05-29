@@ -152,7 +152,9 @@ export const MediaScalarFieldEnum = {
   posterUrl: 'posterUrl',
   duration: 'duration',
   createdAt: 'createdAt',
-  views: 'views'
+  views: 'views',
+  videoQuality: 'videoQuality',
+  categories: 'categories'
 } as const
 
 export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]

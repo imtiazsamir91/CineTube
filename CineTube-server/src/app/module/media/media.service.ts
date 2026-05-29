@@ -1,15 +1,19 @@
-import { Media, PricingType } from "../../../generated/prisma/client";
+import { Media, PricingType, VideoQuality } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+
 
 interface MediaFilters {
     search?: string;
     releaseYear?: string;
     sortBy?: string;
+    videoQuality?: VideoQuality; 
+    categories?: string;         
     page?: string;
     limit?: string;
 }
 
-const createMedia = async (payload: Media): Promise<Media> => {
+
+const createMedia = async (payload: Media & { categories: string[], videoQuality?: VideoQuality }): Promise<Media> => {
     const media = await prisma.media.create({
         data: {
             title: payload.title,
@@ -18,12 +22,14 @@ const createMedia = async (payload: Media): Promise<Media> => {
             director: payload.director || null,
             cast: payload.cast || null,
             streamingPlatforms: payload.streamingPlatforms || null,
-            
             pricingType: (payload.pricingType as PricingType) || PricingType.FREE,
             videoLink: payload.videoLink || null,
-            posterUrl: payload.posterUrl || null
+            posterUrl: payload.posterUrl || null,
+            duration: payload.duration ? Number(payload.duration) : 0, 
+            views: 0, 
+            videoQuality: payload.videoQuality || VideoQuality.FHD, 
+            categories: payload.categories || [] 
         },
-        
         include: {
             reviews: true,
             watchlist: true
@@ -32,12 +38,13 @@ const createMedia = async (payload: Media): Promise<Media> => {
     return media;
 };
 
-const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null = null): Promise<any[]> => {
-    const { search, releaseYear, sortBy, page = "1", limit = "10" } = filters;
+
+const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null = null): Promise<any> => {
+    const { search, releaseYear, sortBy, videoQuality, categories, page = "1", limit = "10" } = filters;
     const skip = (Number(page) - 1) * Number(limit);
     const where: any = {};
 
-    // primium and free logic
+   
     let hasActiveSubscription = false;
     if (loggedInUserId) {
         const activeSub = await prisma.subscription.findFirst({
@@ -50,7 +57,7 @@ const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null 
         if (activeSub) hasActiveSubscription = true;
     }
 
-   
+    
     if (!hasActiveSubscription) {
         where.pricingType = 'FREE';
     }
@@ -59,28 +66,52 @@ const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null 
     if (search) {
         where.OR = [
             { title: { contains: search, mode: 'insensitive' } },
-            { director: { contains: search, mode: 'insensitive' } }
+            { director: { contains: search, mode: 'insensitive' } },
+            { cast: { contains: search, mode: 'insensitive' } },
+            { synopsis: { contains: search, mode: 'insensitive' } }
         ];
     }
 
+    
     if (releaseYear) {
         where.releaseYear = Number(releaseYear);
     }
 
-    let orderBy: any = { createdAt: 'desc' };
+    
+    if (videoQuality) {
+        where.videoQuality = videoQuality;
+    }
+
+    
+    if (categories) {
+        const categoriesArray = categories.split(',').map(cat => cat.trim());
+        where.categories = {
+            hasEvery: categoriesArray 
+        };
+    }
+
+   
+    let orderBy: any = { createdAt: 'desc' }; 
     if (sortBy === 'latest') orderBy = { releaseYear: 'desc' };
+    if (sortBy === 'trending') orderBy = { views: 'desc' }; 
 
-    const data = await prisma.media.findMany({
-        where,
-        orderBy,
-        skip: skip,
-        take: Number(limit),
-        include: { reviews: { select: { rating: true } },
-                   watchlist: true }
-    });
+    
+    const [data, totalCount] = await Promise.all([
+        prisma.media.findMany({
+            where,
+            orderBy,
+            skip: skip,
+            take: Number(limit),
+            include: { 
+                reviews: { select: { rating: true } },
+                watchlist: true 
+            }
+        }),
+        prisma.media.count({ where })
+    ]);
 
-    // rating calculate avg and total reviews
-    const formattedData = data.map(media => {
+   
+    let formattedData = data.map(media => {
         const totalReviews = media.reviews.length;
         const avgRating = totalReviews > 0 
             ? media.reviews.reduce((acc, rev) => acc + rev.rating, 0) / totalReviews 
@@ -93,12 +124,23 @@ const getAllMedia = async (filters: MediaFilters, loggedInUserId: number | null 
         };
     });
 
+    
     if (sortBy === 'highest-rated') {
         formattedData.sort((a, b) => b.averageRating - a.averageRating);
     }
 
-    return formattedData;
+   
+    return {
+        meta: {
+            totalData: totalCount,
+            page: Number(page),
+            limit: Number(limit),
+            totalPage: Math.ceil(totalCount / Number(limit))
+        },
+        movies: formattedData
+    };
 };
+
 
 const getMediaById = async (id: string): Promise<any> => {
     const media = await prisma.media.findUnique({
@@ -114,13 +156,15 @@ const getMediaById = async (id: string): Promise<any> => {
     return media;
 };
 
-const updateMedia = async (id: string, payload: Partial<Media>): Promise<Media> => {
+
+const updateMedia = async (id: string, payload: Partial<Media & { categories: string[] }>): Promise<Media> => {
     const media = await prisma.media.update({
         where: { id },
         data: payload
     });
     return media;
 };
+
 
 const deleteMedia = async (id: string): Promise<Media> => {
     const media = await prisma.media.delete({

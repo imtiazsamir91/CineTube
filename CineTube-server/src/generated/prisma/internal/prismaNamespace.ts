@@ -1413,7 +1413,9 @@ export const MediaScalarFieldEnum = {
   posterUrl: 'posterUrl',
   duration: 'duration',
   createdAt: 'createdAt',
-  views: 'views'
+  views: 'views',
+  videoQuality: 'videoQuality',
+  categories: 'categories'
 } as const
 
 export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]
@@ -1599,6 +1601,20 @@ export type EnumPricingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'PricingType[]'
  */
 export type ListEnumPricingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PricingType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VideoQuality'
+ */
+export type EnumVideoQualityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VideoQuality'>
+    
+
+
+/**
+ * Reference to a field of type 'VideoQuality[]'
+ */
+export type ListEnumVideoQualityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VideoQuality[]'>
     
 
 

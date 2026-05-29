@@ -50,3 +50,13 @@ export const Status = {
 } as const
 
 export type Status = (typeof Status)[keyof typeof Status]
+
+
+export const VideoQuality = {
+  SD: 'SD',
+  HD: 'HD',
+  FHD: 'FHD',
+  ULTRA_HD: 'ULTRA_HD'
+} as const
+
+export type VideoQuality = (typeof VideoQuality)[keyof typeof VideoQuality]

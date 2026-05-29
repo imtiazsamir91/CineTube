@@ -25,3 +25,9 @@ enum Status {
   APPROVED
   UNPUBLISHED
 }
+enum VideoQuality {
+  SD
+  HD
+  FHD
+  ULTRA_HD
+}
