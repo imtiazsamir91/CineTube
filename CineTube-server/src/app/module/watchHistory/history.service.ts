@@ -8,9 +8,31 @@ const updateProgress = async (
   duration: number
 ) => {
   
-  const isCompleted = (currentPosition / duration) >= 0.9;
+  
+  const isCompleted = duration > 0 ? (currentPosition / duration) >= 0.9 : false;
 
-  const history = await (prisma as any).watchHistory.upsert({
+  
+  const existingHistory = await prisma.watchHistory.findUnique({
+    where: {
+      userId_mediaId: { userId, mediaId }
+    }
+  });
+
+  
+  if (!existingHistory) {
+    await prisma.media.update({
+      where: { id: mediaId },
+      data: {
+        views: {
+          increment: 1 
+        }
+      }
+    });
+    console.log(`🚀 Video ID: ${mediaId} - First time watch! View count incremented.`);
+  }
+
+ 
+  const history = await prisma.watchHistory.upsert({
     where: {
       userId_mediaId: { userId, mediaId } 
     },
@@ -25,16 +47,23 @@ const updateProgress = async (
       currentPosition,
       duration,
       isCompleted
-    },
-    include: { media: true }
+    }
   });
 
-  return history;
+  
+  const freshMedia = await prisma.media.findUnique({
+    where: { id: mediaId }
+  });
+
+  return {
+    ...history,
+    media: freshMedia
+  };
 };
 
 
 const getContinueWatching = async (userId: string) => {
-  return await (prisma as any).watchHistory.findMany({
+  return await prisma.watchHistory.findMany({
     where: {
       userId,
       isCompleted: false 

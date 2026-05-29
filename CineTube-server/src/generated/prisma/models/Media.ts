@@ -29,11 +29,13 @@ export type AggregateMedia = {
 export type MediaAvgAggregateOutputType = {
   releaseYear: number | null
   duration: number | null
+  views: number | null
 }
 
 export type MediaSumAggregateOutputType = {
   releaseYear: number | null
   duration: number | null
+  views: number | null
 }
 
 export type MediaMinAggregateOutputType = {
@@ -49,6 +51,7 @@ export type MediaMinAggregateOutputType = {
   posterUrl: string | null
   duration: number | null
   createdAt: Date | null
+  views: number | null
 }
 
 export type MediaMaxAggregateOutputType = {
@@ -64,6 +67,7 @@ export type MediaMaxAggregateOutputType = {
   posterUrl: string | null
   duration: number | null
   createdAt: Date | null
+  views: number | null
 }
 
 export type MediaCountAggregateOutputType = {
@@ -79,6 +83,7 @@ export type MediaCountAggregateOutputType = {
   posterUrl: number
   duration: number
   createdAt: number
+  views: number
   _all: number
 }
 
@@ -86,11 +91,13 @@ export type MediaCountAggregateOutputType = {
 export type MediaAvgAggregateInputType = {
   releaseYear?: true
   duration?: true
+  views?: true
 }
 
 export type MediaSumAggregateInputType = {
   releaseYear?: true
   duration?: true
+  views?: true
 }
 
 export type MediaMinAggregateInputType = {
@@ -106,6 +113,7 @@ export type MediaMinAggregateInputType = {
   posterUrl?: true
   duration?: true
   createdAt?: true
+  views?: true
 }
 
 export type MediaMaxAggregateInputType = {
@@ -121,6 +129,7 @@ export type MediaMaxAggregateInputType = {
   posterUrl?: true
   duration?: true
   createdAt?: true
+  views?: true
 }
 
 export type MediaCountAggregateInputType = {
@@ -136,6 +145,7 @@ export type MediaCountAggregateInputType = {
   posterUrl?: true
   duration?: true
   createdAt?: true
+  views?: true
   _all?: true
 }
 
@@ -238,6 +248,7 @@ export type MediaGroupByOutputType = {
   posterUrl: string | null
   duration: number
   createdAt: Date
+  views: number
   _count: MediaCountAggregateOutputType | null
   _avg: MediaAvgAggregateOutputType | null
   _sum: MediaSumAggregateOutputType | null
@@ -276,6 +287,7 @@ export type MediaWhereInput = {
   posterUrl?: Prisma.StringNullableFilter<"Media"> | string | null
   duration?: Prisma.IntFilter<"Media"> | number
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
+  views?: Prisma.IntFilter<"Media"> | number
   reviews?: Prisma.ReviewListRelationFilter
   watchlist?: Prisma.WatchlistListRelationFilter
   watchHistory?: Prisma.WatchHistoryListRelationFilter
@@ -294,6 +306,7 @@ export type MediaOrderByWithRelationInput = {
   posterUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   duration?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  views?: Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   watchlist?: Prisma.WatchlistOrderByRelationAggregateInput
   watchHistory?: Prisma.WatchHistoryOrderByRelationAggregateInput
@@ -315,6 +328,7 @@ export type MediaWhereUniqueInput = Prisma.AtLeast<{
   posterUrl?: Prisma.StringNullableFilter<"Media"> | string | null
   duration?: Prisma.IntFilter<"Media"> | number
   createdAt?: Prisma.DateTimeFilter<"Media"> | Date | string
+  views?: Prisma.IntFilter<"Media"> | number
   reviews?: Prisma.ReviewListRelationFilter
   watchlist?: Prisma.WatchlistListRelationFilter
   watchHistory?: Prisma.WatchHistoryListRelationFilter
@@ -333,6 +347,7 @@ export type MediaOrderByWithAggregationInput = {
   posterUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   duration?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  views?: Prisma.SortOrder
   _count?: Prisma.MediaCountOrderByAggregateInput
   _avg?: Prisma.MediaAvgOrderByAggregateInput
   _max?: Prisma.MediaMaxOrderByAggregateInput
@@ -356,6 +371,7 @@ export type MediaScalarWhereWithAggregatesInput = {
   posterUrl?: Prisma.StringNullableWithAggregatesFilter<"Media"> | string | null
   duration?: Prisma.IntWithAggregatesFilter<"Media"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Media"> | Date | string
+  views?: Prisma.IntWithAggregatesFilter<"Media"> | number
 }
 
 export type MediaCreateInput = {
@@ -371,6 +387,7 @@ export type MediaCreateInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
@@ -389,6 +406,7 @@ export type MediaUncheckedCreateInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
@@ -407,6 +425,7 @@ export type MediaUpdateInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
@@ -425,6 +444,7 @@ export type MediaUncheckedUpdateInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
@@ -443,6 +463,7 @@ export type MediaCreateManyInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
 }
 
 export type MediaUpdateManyMutationInput = {
@@ -458,6 +479,7 @@ export type MediaUpdateManyMutationInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type MediaUncheckedUpdateManyInput = {
@@ -473,6 +495,7 @@ export type MediaUncheckedUpdateManyInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type MediaCountOrderByAggregateInput = {
@@ -488,11 +511,13 @@ export type MediaCountOrderByAggregateInput = {
   posterUrl?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  views?: Prisma.SortOrder
 }
 
 export type MediaAvgOrderByAggregateInput = {
   releaseYear?: Prisma.SortOrder
   duration?: Prisma.SortOrder
+  views?: Prisma.SortOrder
 }
 
 export type MediaMaxOrderByAggregateInput = {
@@ -508,6 +533,7 @@ export type MediaMaxOrderByAggregateInput = {
   posterUrl?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  views?: Prisma.SortOrder
 }
 
 export type MediaMinOrderByAggregateInput = {
@@ -523,11 +549,13 @@ export type MediaMinOrderByAggregateInput = {
   posterUrl?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  views?: Prisma.SortOrder
 }
 
 export type MediaSumOrderByAggregateInput = {
   releaseYear?: Prisma.SortOrder
   duration?: Prisma.SortOrder
+  views?: Prisma.SortOrder
 }
 
 export type MediaScalarRelationFilter = {
@@ -602,6 +630,7 @@ export type MediaCreateWithoutWatchlistInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
 }
@@ -619,6 +648,7 @@ export type MediaUncheckedCreateWithoutWatchlistInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
 }
@@ -652,6 +682,7 @@ export type MediaUpdateWithoutWatchlistInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
 }
@@ -669,6 +700,7 @@ export type MediaUncheckedUpdateWithoutWatchlistInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
 }
@@ -686,6 +718,7 @@ export type MediaCreateWithoutWatchHistoryInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
 }
@@ -703,6 +736,7 @@ export type MediaUncheckedCreateWithoutWatchHistoryInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMediaInput
   watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
 }
@@ -736,6 +770,7 @@ export type MediaUpdateWithoutWatchHistoryInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
 }
@@ -753,6 +788,7 @@ export type MediaUncheckedUpdateWithoutWatchHistoryInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMediaNestedInput
   watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
 }
@@ -770,6 +806,7 @@ export type MediaCreateWithoutReviewsInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   watchlist?: Prisma.WatchlistCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryCreateNestedManyWithoutMediaInput
 }
@@ -787,6 +824,7 @@ export type MediaUncheckedCreateWithoutReviewsInput = {
   posterUrl?: string | null
   duration?: number
   createdAt?: Date | string
+  views?: number
   watchlist?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMediaInput
   watchHistory?: Prisma.WatchHistoryUncheckedCreateNestedManyWithoutMediaInput
 }
@@ -820,6 +858,7 @@ export type MediaUpdateWithoutReviewsInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   watchlist?: Prisma.WatchlistUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUpdateManyWithoutMediaNestedInput
 }
@@ -837,6 +876,7 @@ export type MediaUncheckedUpdateWithoutReviewsInput = {
   posterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.IntFieldUpdateOperationsInput | number
   watchlist?: Prisma.WatchlistUncheckedUpdateManyWithoutMediaNestedInput
   watchHistory?: Prisma.WatchHistoryUncheckedUpdateManyWithoutMediaNestedInput
 }
@@ -903,6 +943,7 @@ export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   posterUrl?: boolean
   duration?: boolean
   createdAt?: boolean
+  views?: boolean
   reviews?: boolean | Prisma.Media$reviewsArgs<ExtArgs>
   watchlist?: boolean | Prisma.Media$watchlistArgs<ExtArgs>
   watchHistory?: boolean | Prisma.Media$watchHistoryArgs<ExtArgs>
@@ -922,6 +963,7 @@ export type MediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   posterUrl?: boolean
   duration?: boolean
   createdAt?: boolean
+  views?: boolean
 }, ExtArgs["result"]["media"]>
 
 export type MediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -937,6 +979,7 @@ export type MediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   posterUrl?: boolean
   duration?: boolean
   createdAt?: boolean
+  views?: boolean
 }, ExtArgs["result"]["media"]>
 
 export type MediaSelectScalar = {
@@ -952,9 +995,10 @@ export type MediaSelectScalar = {
   posterUrl?: boolean
   duration?: boolean
   createdAt?: boolean
+  views?: boolean
 }
 
-export type MediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "releaseYear" | "director" | "cast" | "streamingPlatforms" | "pricingType" | "videoLink" | "posterUrl" | "duration" | "createdAt", ExtArgs["result"]["media"]>
+export type MediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "releaseYear" | "director" | "cast" | "streamingPlatforms" | "pricingType" | "videoLink" | "posterUrl" | "duration" | "createdAt" | "views", ExtArgs["result"]["media"]>
 export type MediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.Media$reviewsArgs<ExtArgs>
   watchlist?: boolean | Prisma.Media$watchlistArgs<ExtArgs>
@@ -984,6 +1028,7 @@ export type $MediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     posterUrl: string | null
     duration: number
     createdAt: Date
+    views: number
   }, ExtArgs["result"]["media"]>
   composites: {}
 }
@@ -1422,6 +1467,7 @@ export interface MediaFieldRefs {
   readonly posterUrl: Prisma.FieldRef<"Media", 'String'>
   readonly duration: Prisma.FieldRef<"Media", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Media", 'DateTime'>
+  readonly views: Prisma.FieldRef<"Media", 'Int'>
 }
     
 

@@ -11,6 +11,7 @@ model Media {
   posterUrl          String?        @map("poster_url")
   duration           Int            @default(0) 
   createdAt          DateTime       @default(now()) @map("created_at")
+  views              Int            @default(0)
 
   // Relations
   reviews            Review[]
