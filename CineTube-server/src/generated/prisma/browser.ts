@@ -53,6 +53,11 @@ export type Watchlist = Prisma.WatchlistModel
  */
 export type WatchHistory = Prisma.WatchHistoryModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model Review
  * 
  */

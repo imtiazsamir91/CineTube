@@ -58,6 +58,7 @@ export const ModelName = {
   Media: 'Media',
   Watchlist: 'Watchlist',
   WatchHistory: 'WatchHistory',
+  Notification: 'Notification',
   Review: 'Review',
   Comment: 'Comment',
   ReviewLike: 'ReviewLike',
@@ -149,6 +150,7 @@ export const MediaScalarFieldEnum = {
   pricingType: 'pricingType',
   videoLink: 'videoLink',
   posterUrl: 'posterUrl',
+  duration: 'duration',
   createdAt: 'createdAt'
 } as const
 
@@ -174,6 +176,21 @@ export const WatchHistoryScalarFieldEnum = {
 } as const
 
 export type WatchHistoryScalarFieldEnum = (typeof WatchHistoryScalarFieldEnum)[keyof typeof WatchHistoryScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  receiverId: 'receiverId',
+  senderId: 'senderId',
+  title: 'title',
+  message: 'message',
+  isRead: 'isRead',
+  type: 'type',
+  link: 'link',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {

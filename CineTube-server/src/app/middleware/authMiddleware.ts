@@ -4,7 +4,6 @@ import { auth } from "../lib/auth";
 import AppError from "../errorHelpers/AppError"; 
 import jwt from "jsonwebtoken"; 
 
-// ১. গ্লোবাল টাইপে 'role' ফিল্ডটি যুক্ত করা হলো
 declare global {
     namespace Express {
         interface Request {
@@ -12,13 +11,13 @@ declare global {
                 userId: string;
                 id: string;
                 email?: string | null;
-                role: "USER" | "ADMIN"; // 🎯 রোল টাইপ ডিফাইন করা হলো
+                role: "USER" | "ADMIN"; 
             };
         }
     }
 }
 
-// ২. মিডলওয়্যারকে ডাইনামিক করা হলো যাতে কল করার সময় রোল পাস করা যায় (যেমন: authMiddleware("ADMIN"))
+
 export const authMiddleware = (...allowedRoles: ("USER" | "ADMIN")[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -32,7 +31,6 @@ export const authMiddleware = (...allowedRoles: ("USER" | "ADMIN")[]) => {
                 throw new AppError(httpStatus.UNAUTHORIZED, "Authentication required! Please log in.");
             }
 
-            // --- Better-Auth Session Verification ---
             if (sessionToken) {
                 const session = await auth.api.getSession({
                     headers: new Headers({
@@ -40,17 +38,17 @@ export const authMiddleware = (...allowedRoles: ("USER" | "ADMIN")[]) => {
                     }),
                 });
 
-                // 🎯 Better-Auth থেকে আসা ইউজারের রোলটি (session.user.role) এখানে নেওয়া হয়েছে
+                
                 if (session && session.user) {
                     console.log("Better-Auth Session Verified: 🎉 Success!");
                     req.user = {
                         userId: session.user.id,
                         id: session.user.id,
                         email: session.user.email,
-                        role: (session.user as any).role || "USER", // 🎯 রোল অ্যাসাইন হলো
+                        role: (session.user as any).role || "USER", 
                     };
 
-                    // রোল ভ্যালিডেশন চেক
+                   
                     if (allowedRoles.length > 0 && !allowedRoles.includes(req.user.role)) {
                         throw new AppError(httpStatus.FORBIDDEN, "Forbidden access! You do not have permission.");
                     }
@@ -59,21 +57,21 @@ export const authMiddleware = (...allowedRoles: ("USER" | "ADMIN")[]) => {
                 }
             }
 
-            // --- Custom Access Token (Backup) Verification ---
+           
             if (accessToken) {
                 const decoded = jwt.decode(accessToken) as any;
                 
-                // 🎯 টোকেনের ডিকোডেড ডেটা থেকেও রোল নেওয়া হচ্ছে
+                
                 if (decoded && decoded.userId) {
                     console.log("Custom Access Token Verified: 🚀 Backup Success!");
                     req.user = {
                         userId: decoded.userId,
                         id: decoded.userId,
                         email: decoded.email,
-                        role: decoded.role || "USER", // 🎯 রোল অ্যাসাইন হলো
+                        role: decoded.role || "USER", 
                     };
 
-                    // রোল ভ্যালিডেশন চেক
+                   
                     if (allowedRoles.length > 0 && !allowedRoles.includes(req.user.role)) {
                         throw new AppError(httpStatus.FORBIDDEN, "Forbidden access! You do not have permission.");
                     }

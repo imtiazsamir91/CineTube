@@ -15,7 +15,7 @@ model User {
   comments      Comment[]
   reviewLikes   ReviewLike[]
   watchHistory WatchHistory[]
- 
+  notifications Notification[] 
 
   @@map("user")
 }
