@@ -7,6 +7,7 @@ import { subscriptionRoutes } from "../module/subscription/subscription.route";
 import { reviewRoutes } from "../module/review/review.routes";
 import { commentRoutes } from "../module/comment/comment.routes";
 import { notificationRoutes } from "../module/notification/notification.routes";
+import { dashboardRoutes } from "../module/dashboard/dashboard.routes";
 
 const router = Router();
 router.use("/auth", AuthRoutes);
@@ -17,6 +18,7 @@ router.use("/subscription", subscriptionRoutes);
 router.use("/review", reviewRoutes);
 router.use("/comment", commentRoutes);
 router.use("/notification", notificationRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 
 
