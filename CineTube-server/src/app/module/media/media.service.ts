@@ -173,6 +173,7 @@ const deleteMedia = async (id: string): Promise<Media> => {
     return media;
 };
 
+
 export const MediaService = {
     createMedia,
     getAllMedia,
