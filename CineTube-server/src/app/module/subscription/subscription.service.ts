@@ -1,34 +1,47 @@
 import { PlanType, SubscriptionStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import crypto from "crypto";
-import { sendEmail } from "../../utils/email"; // 
+import { sendEmail } from "../../utils/email"; 
 import { Prisma } from "../../../generated/prisma/client";
+import Stripe from "stripe"; 
 
 
-
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2023-10-16" as any, 
+});
 
 const createPendingSubscription = async (payload: {
   userId: string;
-  stripePaymentId: string;
   planType: PlanType;
   amount: number; 
 }) => {
-  const { userId, stripePaymentId, planType, amount } = payload;
+  const { userId, planType, amount } = payload;
 
-  
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.email) throw new Error("User email not found");
+
+ 
+  const stripeAmount = Math.round(amount * 100); 
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: stripeAmount,
+    currency: "usd", 
+    metadata: {
+      userId,
+      planType,
+    },
+  });
+
+
   const otp = crypto.randomInt(100000, 999999).toString();
   const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); 
 
   
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user || !user.email) throw new Error("User email not found");
-
-
   const pendingSubscription = await prisma.subscription.create({
     data: {
       userId,
-      stripePaymentId,
+      stripePaymentId: paymentIntent.id, 
       planType,
       amount: new Prisma.Decimal(amount), 
       status: SubscriptionStatus.PENDING, 
@@ -38,24 +51,22 @@ const createPendingSubscription = async (payload: {
   });
 
   
- await sendEmail({
-  to: user.email,
-  subject: "🔐 Activate Your CineTube Premium Plan",
-
-  templateName: "subscriptionOtp",
-
-  templateData: {
-    name: user.name || "User",
-    otp,
-  },
-});
-
+  await sendEmail({
+    to: user.email,
+    subject: "🔐 Activate Your CineTube Premium Plan",
+    templateName: "subscriptionOtp",
+    templateData: {
+      name: user.name || "User",
+      otp,
+    },
+  });
+  
   return {
     subscriptionId: pendingSubscription.id,
-    message: "Subscription initialized. An activation OTP has been sent to your email.",
+    clientSecret: paymentIntent.client_secret,
+    message: "Subscription initialized. Payment Intent generated and Activation OTP sent to email.",
   };
 };
-
 
 const verifySubscriptionOtp = async (userId: string, otp: string) => {
   
@@ -71,7 +82,6 @@ const verifySubscriptionOtp = async (userId: string, otp: string) => {
   if (subscription.activationOtp !== otp) throw new Error("Invalid OTP code. Please check again.");
   if (new Date() > new Date(subscription.otpExpiresAt!)) throw new Error("OTP has expired. Please request a new checkout.");
 
-  
   const startDate = new Date();
   const endDate = new Date();
 
@@ -81,7 +91,6 @@ const verifySubscriptionOtp = async (userId: string, otp: string) => {
     endDate.setFullYear(startDate.getFullYear() + 1);
   }
 
-  
   const activatedSubscription = await prisma.subscription.update({
     where: { id: subscription.id },
     data: {
@@ -103,7 +112,6 @@ const verifySubscriptionOtp = async (userId: string, otp: string) => {
 
   return activatedSubscription;
 };
-
 
 const getMySubscription = async (userId: string) => {
   const currentTime = new Date();

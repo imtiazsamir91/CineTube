@@ -5,20 +5,32 @@ import { subscriptionService } from "./subscription.service";
 
 const checkoutSuccess = async (req: Request, res: Response, next: NextFunction) => {
   try {
+  
     const userId = req.user!.userId; 
-    const { stripePaymentId, planType, amount } = req.body;
+    
+
+    const { planType, amount } = req.body;
+
+    if (!planType || !amount) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "Missing required fields: planType or amount",
+      });
+    }
 
     const result = await subscriptionService.createPendingSubscription({
       userId,
-      stripePaymentId,
       planType,
       amount: Number(amount), 
     });
 
     res.status(httpStatus.OK).json({
       success: true,
-      message: "Payment tracked successfully. Check your email for activation OTP.",
-      data: result,
+      message: "Subscription initialized. Use the clientSecret to pay via Stripe, and check email for OTP.",
+      data: {
+        subscriptionId: result.subscriptionId,
+        clientSecret: result.clientSecret, 
+      },
     });
   } catch (error) {
     next(error);
@@ -46,6 +58,7 @@ const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
       data: result,
     });
   } catch (error) {
+    
     res.status(httpStatus.BAD_REQUEST).json({
       success: false,
       message: error instanceof Error ? error.message : "OTP Verification failed",
