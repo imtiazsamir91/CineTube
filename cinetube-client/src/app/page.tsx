@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import LandingPage from "@/components/home/LandingPage";
 
 export default function Home() {
   return (
-  <div>
-    <Button variant="outline">Hello World</Button>
-  </div>
+    <>
+      <LandingPage />
+    </>
   );
 }
