@@ -5,16 +5,28 @@ export const isAuthRoute = (pathname: string): boolean => {
 };
 
 export const getRouteOwner = (pathname: string): string | null => {
-  if (pathname.startsWith("/admin")) {
+  const path = pathname.toLowerCase();
+  if (path.startsWith("/admin")) {
     return "ADMIN";
   }
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/watchlist") || pathname.startsWith("/profile")) {
+  if (path.startsWith("/dashboard") || path.startsWith("/watchlist") || path.startsWith("/profile")) {
     return "COMMON";
   }
   return null;
 };
 
-export const getDefaultDashboardRoute = (role: UserRole | null): string => {
-  if (role === "ADMIN") return "/admin/dashboard";
+export const getDefaultDashboardRoute = (role: string | null): string => {
+  if (!role) return "/";
+  const upperRole = role.toUpperCase();
+  if (upperRole === "ADMIN") return "/admin/dashboard";
   return "/";
+};
+
+export const isValidRedirectForRole = (pathname: string, role: string): boolean => {
+  if (!pathname.startsWith("/")) return false;
+  
+  const routeOwner = getRouteOwner(pathname);
+  if (routeOwner === null || routeOwner === "COMMON") return true;
+  
+  return routeOwner === role.toUpperCase();
 };
