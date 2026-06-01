@@ -1,23 +1,15 @@
 "use client";
 
+import AllMovies from "@/components/home/AllMovie";
 import TrendingRow from "@/components/home/TrendingRow";
 import { useQuery } from "@tanstack/react-query";
+import { getMedias } from "@/service/mediaService"; 
 
-
-const fetchMedia = async () => {
-  const res = await fetch("http://localhost:5000/api/v1/media");
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const data = await res.json();
-  return data?.data || data; 
-};
-
-export default function DashboardPage() {
+export default function homePage() {
+  
   const { data: mediaList, isLoading, error } = useQuery({
     queryKey: ["media-list"],
-    queryKeyHashFn: () => "media-list",
-    queryFn: fetchMedia,
+    queryFn: () => getMedias(), 
   });
 
   if (isLoading) {
@@ -28,11 +20,21 @@ export default function DashboardPage() {
     );
   }
 
-  if (error) return null;
+  if (error) return <div className="text-white text-center">Error loading media.</div>;
+
+ 
+  const list = Array.isArray(mediaList) ? mediaList : [];
 
   return (
     <div className="min-h-screen bg-black">
-      <TrendingRow mediaList={mediaList || []} />
+      
+      <TrendingRow mediaList={list} />
+      
+      
+      
+      
+     
+     
     </div>
   );
 }

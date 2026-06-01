@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import LandingPage from "@/components/home/LandingPage";
 import TrendingRow from "@/components/home/TrendingRow";
+import AllMovies from "@/components/home/AllMovie";
+import Link from "next/link";
 
 export default function Home() {
   const [mediaList, setMediaList] = useState([]);
@@ -13,7 +15,9 @@ export default function Home() {
         const res = await fetch("http://localhost:5000/api/v1/media");
         if (res.ok) {
           const result = await res.json();
-          setMediaList(result?.data || result || []);
+          
+          const data = result?.data || result || [];
+          setMediaList(data);
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -23,7 +27,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="w-full min-h-screen bg-black flex flex-col scrollbar-none overflow-x-hidden">
+    <main className="w-full min-h-screen bg-black flex flex-col overflow-x-hidden">
       <div className="w-full block relative">
         <LandingPage />
       </div>
@@ -31,6 +35,19 @@ export default function Home() {
       {mediaList && mediaList.length > 0 && (
         <div className="w-full bg-black relative z-30 pb-20 -mt-16 md:-mt-28">
           <TrendingRow mediaList={mediaList} />
+          
+         
+          <AllMovies mediaList={mediaList.slice(0, 8)} />
+          
+         
+          <div className="flex justify-center mt-10">
+            <Link 
+              href="/allmovie" 
+              className="bg-zinc-800 hover:bg-[#B9090B] text-white px-8 py-3 rounded-full font-bold transition-all duration-300 hover:scale-110"
+            >
+              See All Movies
+            </Link>
+          </div>
         </div>
       )}
     </main>
