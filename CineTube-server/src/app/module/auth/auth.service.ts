@@ -1,11 +1,13 @@
 import status from "http-status";
-import { auth } from "../../lib/auth"; 
-import { prisma } from "../../lib/prisma"; 
-import AppError from "../../errorHelpers/AppError"; 
+import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
+import AppError from "../../errorHelpers/AppError";
 import { ILoginUserPayload, ISignUpPayload } from "./auth.interface";
-import { tokenUtils } from "../../utils/token"; 
-import { get } from "node:http";
+import { tokenUtils } from "../../utils/token";
 
+/* =========================
+   REGISTER USER
+========================= */
 const registerUser = async (payload: ISignUpPayload) => {
     const { name, email, password } = payload;
 
@@ -14,98 +16,218 @@ const registerUser = async (payload: ISignUpPayload) => {
     });
 
     if (isUserExists) {
-        throw new AppError(status.BAD_REQUEST, "Email already in use. Please use a different email.");
+        throw new AppError(
+            status.BAD_REQUEST,
+            "Email already in use"
+        );
     }
 
     const authResponse = await auth.api.signUpEmail({
         body: { name, email, password },
     });
 
-    if (!authResponse || !authResponse.user) {
-        throw new AppError(status.INTERNAL_SERVER_ERROR, "User registration failed. Please try again.");
+    if (!authResponse?.user) {
+        throw new AppError(
+            status.INTERNAL_SERVER_ERROR,
+            "Registration failed"
+        );
     }
 
-   
     const sessionResponse = await auth.api.signInEmail({
-        body: { email, password }
+        body: { email, password },
     });
 
-    const userRole = "role" in authResponse.user ? authResponse.user.role : "user";
+    const role =
+        (authResponse.user as any).role || "USER";
 
-   
     const accessToken = tokenUtils.getAccessToken({
         userId: authResponse.user.id,
-        role: userRole,
-        name: authResponse.user.name,
         email: authResponse.user.email,
+        name: authResponse.user.name,
+        role,
     });
 
     const refreshToken = tokenUtils.getRefreshToken({
         userId: authResponse.user.id,
-        role: userRole,
-        name: authResponse.user.name,
         email: authResponse.user.email,
+        name: authResponse.user.name,
+        role,
     });
 
     return {
         user: authResponse.user,
-        sessionToken: sessionResponse.token, 
+        sessionToken: sessionResponse.token,
         accessToken,
-        refreshToken
+        refreshToken,
     };
 };
 
+/* =========================
+   LOGIN USER
+========================= */
 const loginUser = async (payload: ILoginUserPayload) => {
     const { email, password } = payload;
-    
+
     const authResponse = await auth.api.signInEmail({
         body: { email, password },
     });
 
-    if (!authResponse || !authResponse.user) {
-        throw new AppError(status.UNAUTHORIZED, "Invalid email or password");
+    if (!authResponse?.user) {
+        throw new AppError(
+            status.UNAUTHORIZED,
+            "Invalid credentials"
+        );
     }
 
- 
-    const userRole = "role" in authResponse.user ? authResponse.user.role : "user";
+    const role =
+        (authResponse.user as any).role || "USER";
 
     const accessToken = tokenUtils.getAccessToken({
         userId: authResponse.user.id,
-        role: userRole,
-        name: authResponse.user.name,
         email: authResponse.user.email,
+        name: authResponse.user.name,
+        role,
     });
 
     const refreshToken = tokenUtils.getRefreshToken({
         userId: authResponse.user.id,
-        role: userRole,
-        name: authResponse.user.name,
         email: authResponse.user.email,
+        name: authResponse.user.name,
+        role,
     });
 
     return {
         user: authResponse.user,
-        sessionToken: authResponse.token, 
+        sessionToken: authResponse.token,
         accessToken,
-        refreshToken
+        refreshToken,
     };
 };
- const getMe = async (user: any) => {
 
-    return user;
+/* =========================
+   GET ME
+========================= */
+const getMe = async (user: any) => {
+    if (!user) {
+        throw new AppError(status.UNAUTHORIZED, "User not found");
+    }
+
+    return {
+        id: user.id,
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+    };
 };
-const getNewToken = async (refreshToken: string, betterAuthSessionToken: string) => {
-    
-   }
-   const changePassword = async (payload: { oldPassword: string; newPassword: string }, betterAuthSessionToken: string) => {
-    
-   }
 
+/* =========================
+   REFRESH TOKEN
+========================= */
+const getNewAccessToken = async (refreshToken: string) => {
+    if (!refreshToken) {
+        throw new AppError(status.UNAUTHORIZED, "Refresh token missing");
+    }
+
+    let decoded: any;
+
+    try {
+        decoded = tokenUtils.verifyRefreshToken(refreshToken);
+    } catch {
+        throw new AppError(status.UNAUTHORIZED, "Invalid refresh token");
+    }
+
+    if (!decoded?.userId) {
+        throw new AppError(status.UNAUTHORIZED, "Invalid refresh token payload");
+    }
+
+    // optional: verify user exists
+    const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+    });
+
+    if (!user) {
+        throw new AppError(status.UNAUTHORIZED, "User not found");
+    }
+
+    const accessToken = tokenUtils.getAccessToken({
+        userId: user.id,
+        email: user.email,
+        role: (user as any).role || "USER",
+    });
+
+    return {
+        accessToken,
+    };
+};
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
+const changePassword = async (
+    payload: { oldPassword: string; newPassword: string },
+    betterAuthSessionToken: string
+) => {
+    const session = await prisma.session.findFirst({
+        where: {
+            token: betterAuthSessionToken,
+        },
+        include: {
+            user: true,
+        },
+    });
+
+    if (!session) {
+        throw new AppError(
+            status.UNAUTHORIZED,
+            "Session expired"
+        );
+    }
+
+    await auth.api.changePassword({
+        body: {
+            currentPassword: payload.oldPassword,
+            newPassword: payload.newPassword,
+            revokeOtherSessions: true,
+        },
+        headers: {
+            cookie: `better-auth.session_token=${betterAuthSessionToken}`,
+        },
+    });
+
+    return {
+        success: true,
+        message: "Password changed successfully",
+    };
+};
+
+/* =========================
+   LOGOUT
+========================= */
+const logoutUser = async (betterAuthSessionToken: string) => {
+    if (!betterAuthSessionToken) {
+        throw new AppError(
+            status.UNAUTHORIZED,
+            "Session token missing"
+        );
+    }
+
+    await prisma.session.deleteMany({
+        where: {
+            token: betterAuthSessionToken,
+        },
+    });
+
+    return {
+        success: true,
+        message: "Logged out successfully",
+    };
+};
 
 export const AuthService = {
     registerUser,
     loginUser,
     getMe,
-    getNewToken,
-    changePassword
+    getNewAccessToken,
+    changePassword,
+    logoutUser,
 };

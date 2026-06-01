@@ -4,47 +4,55 @@ import { sendResponse } from "../../shared/sendResponse";
 import { MediaService } from "./media.service";
 import httpStatus from "http-status"; 
 
-
-interface CustomRequest extends Request {
-    user?: {
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
         userId: string;
         id: string;
         role: "USER" | "ADMIN"; 
         email?: string | null;
+      };
+      files?: any; 
     }
+  }
 }
-
 
 const createMedia = catchAsync(
     async (req: Request, res: Response) => {
-        
+        const files = req.files as any;
+
+        const coverImage = files?.["coverImage"] ? files["coverImage"][0].path : null;
+        const videoUrl = files?.["videoFile"] ? files["videoFile"][0].path : null;
+
         const { id, createdAt, ...mediaData } = req.body;
         
-        const result = await MediaService.createMedia(mediaData);
+        const mediaPayload = {
+            ...mediaData,
+            coverImage,
+            videoUrl,
+        };
+        
+        const result = await MediaService.createMedia(mediaPayload);
         
         sendResponse(res, {
-            httpStatusCode: 201,
+            httpStatusCode: httpStatus.CREATED, 
             success: true,
-            message: 'Media created successfully',
+            message: 'Media created successfully with Cloudinary links',
             data: result
         });
     }
 );
 
-
 const getAllMedia = catchAsync(
-    async (req: CustomRequest, res: Response) => { 
-        
-        
-        const loggedInUserId = req.user?.id ? Number(req.user.id) : null; 
-        
+    async (req: Request, res: Response) => { 
+        const loggedInUserId = req.user?.id ? String(req.user.id) : null; 
         const filters = req.query; 
         
-       
         const result = await MediaService.getAllMedia(filters as any, loggedInUserId);
         
         sendResponse(res, {
-            httpStatusCode: 200,
+            httpStatusCode: httpStatus.OK, 
             success: true,
             message: 'Media list retrieved successfully',
             meta: result.meta, 
@@ -53,22 +61,19 @@ const getAllMedia = catchAsync(
     }
 );
 
-
 const getMediaById = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
-       
         const result = await MediaService.getMediaById(String(id));
         
         sendResponse(res, {
-            httpStatusCode: 200,
+            httpStatusCode: httpStatus.OK,
             success: true,
             message: 'Media details retrieved successfully',
             data: result
         });
     }
 );
-
 
 const updateMedia = catchAsync(
     async (req: Request, res: Response) => {
@@ -78,7 +83,7 @@ const updateMedia = catchAsync(
         const result = await MediaService.updateMedia(String(id), updateData);
         
         sendResponse(res, {
-            httpStatusCode: 200,
+            httpStatusCode: httpStatus.OK,
             success: true,
             message: 'Media updated successfully',
             data: result
@@ -86,14 +91,13 @@ const updateMedia = catchAsync(
     }
 );
 
-
 const deleteMedia = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
         const result = await MediaService.deleteMedia(String(id));
         
         sendResponse(res, {
-            httpStatusCode: 200,
+            httpStatusCode: httpStatus.OK,
             success: true,
             message: 'Media deleted successfully',
             data: result

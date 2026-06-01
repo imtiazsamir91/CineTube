@@ -9,13 +9,13 @@ const router = express.Router();
 
 router.post(
   "/", 
-  authMiddleware, 
+  authMiddleware(), 
   validateRequest(reviewValidation.createReviewValidationSchema), 
   reviewController.createReview
 );
 
 router.get("/media/:mediaId", reviewController.getMediaReviews);
-router.delete("/:reviewId", authMiddleware, reviewController.deleteReview);
-router.post("/:reviewId/like", authMiddleware, reviewController.toggleReviewLike);
+router.delete("/:reviewId", authMiddleware(), reviewController.deleteReview);
+router.post("/:reviewId/like", authMiddleware(), reviewController.toggleReviewLike);
 
 export const reviewRoutes = router;

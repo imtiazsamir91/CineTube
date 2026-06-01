@@ -5,7 +5,7 @@ import { authMiddleware } from "../../middleware/authMiddleware"; // আপন�
 const router = express.Router();
 
 
-router.use(authMiddleware);
+router.use(authMiddleware());
 
 router.post("/", WatchlistController.addToWatchlist); 
 router.get("/", WatchlistController.getMyWatchlist);   
