@@ -3,23 +3,14 @@
 import TrendingRow from "@/components/home/TrendingRow";
 import AllMovies from "@/components/home/AllMovie";
 import { useQuery } from "@tanstack/react-query";
+import { getMedias } from "@/service/mediaService";
 
-// ১. এই ফাংশনটি DashboardPage এর উপরে রাখুন অথবা আলাদা ফাইলে রেখে ইমপোর্ট করুন
-const fetchMedia = async () => {
-  const res = await fetch("http://localhost:5000/api/v1/media");
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const result = await res.json();
-  // আপনার এপিআই রেসপন্স অনুযায়ী ডেটা রিটার্ন করা হচ্ছে
-  return result?.data || []; 
-};
-
-export default function DashboardPage() {
-  // ২. টাইপস্ক্রিপ্টের জন্য `initialData` বা টাইপ ডিফাইন করা ভালো
+export default function AllMoviePage() {
+  // queryKey তে একটি empty object পাস করা ভালো যদি ভবিষ্যতে ফিল্টারিং যোগ করেন
   const { data: mediaList = [], isLoading, error } = useQuery({
-    queryKey: ["media-list"],
-    queryFn: fetchMedia, // এখানে সরাসরি ফাংশনটি পাস করুন
+    queryKey: ["media-list"], 
+    queryFn: () => getMedias({}), // এখানে একটি empty object বা প্রয়োজনীয় ফিল্টার পাস করুন
+    staleTime: 60000, // ১ মিনিটের জন্য ডাটা ক্যাশ করবে, বারবার এপিআই কল হবে না
   });
 
   if (isLoading) {
@@ -30,13 +21,23 @@ export default function DashboardPage() {
     );
   }
 
-  if (error) return <div className="text-white text-center mt-20">Error loading data.</div>;
+  // error অবজেক্টটি চেক করা ভালো
+  if (error) {
+    console.error("Fetch Error:", error);
+    return <div className="text-white text-center mt-20">Error loading data. Please try again.</div>;
+  }
 
   return (
     <main className="min-h-screen bg-black">
-      {/* ৩. mediaList নিশ্চিতভাবে অ্যারো হিসেবে যাচ্ছে */}
-      <TrendingRow mediaList={mediaList} />
-      <AllMovies mediaList={mediaList} />
+      {/* নিশ্চিত করুন mediaList খালি থাকলেও কম্পোনেন্টগুলো ক্র্যাশ করবে না */}
+      {mediaList.length > 0 ? (
+        <>
+          <TrendingRow mediaList={mediaList} />
+          <AllMovies mediaList={mediaList} />
+        </>
+      ) : (
+        <div className="text-white text-center pt-20">No movies found.</div>
+      )}
     </main>
   );
 }

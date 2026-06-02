@@ -2,6 +2,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ChevronRight } from "lucide-react";
 
 
 export default function LandingPage() {
@@ -28,13 +31,13 @@ export default function LandingPage() {
     >
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-black via-black/40 to-black/80" />
 
-      
-    
+     
+ 
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 text-center text-white">
        
         <div className="max-w-4xl space-y-4 md:space-y-6">
-          
+           
         </div>
       </main>
     </div>

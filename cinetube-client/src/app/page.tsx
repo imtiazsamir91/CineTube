@@ -5,6 +5,7 @@ import LandingPage from "@/components/home/LandingPage";
 import TrendingRow from "@/components/home/TrendingRow";
 import AllMovies from "@/components/home/AllMovie";
 import Link from "next/link";
+import PricingPlans from "@/components/home/PricingPlans";
 
 export default function Home() {
   const [mediaList, setMediaList] = useState([]);
@@ -16,8 +17,11 @@ export default function Home() {
         if (res.ok) {
           const result = await res.json();
           
-          const data = result?.data || result || [];
-          setMediaList(data);
+         
+          const movies = result?.data?.movies || [];
+          
+          console.log("Movies fetched in Home:", movies);
+          setMediaList(movies);
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -32,24 +36,26 @@ export default function Home() {
         <LandingPage />
       </div>
 
-      {mediaList && mediaList.length > 0 && (
+      {/* mediaList চেক করুন */}
+      {mediaList && mediaList.length > 0 ? (
         <div className="w-full bg-black relative z-30 pb-20 -mt-16 md:-mt-28">
           <TrendingRow mediaList={mediaList} />
+          <AllMovies mediaList={mediaList.slice(0, 10)} />
           
-         
-          <AllMovies mediaList={mediaList.slice(0, 8)} />
-          
-         
           <div className="flex justify-center mt-10">
             <Link 
               href="/allmovie" 
               className="bg-zinc-800 hover:bg-[#B9090B] text-white px-8 py-3 rounded-full font-bold transition-all duration-300 hover:scale-110"
             >
-              See All Movies
+              See All Movies ✨
             </Link>
           </div>
         </div>
+      ) : (
+        <div className="text-white text-center py-20">Loading movies...</div>
       )}
+      
+      <div><PricingPlans /></div>
     </main>
   );
 }

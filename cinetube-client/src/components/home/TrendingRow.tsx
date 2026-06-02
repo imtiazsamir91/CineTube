@@ -16,7 +16,7 @@ interface MediaItem {
 }
 
 interface TrendingRowProps {
-  mediaList: MediaItem[];
+  mediaList: MediaItem[] | undefined | null;
 }
 
 export default function TrendingRow({ mediaList }: TrendingRowProps) {
@@ -30,19 +30,29 @@ export default function TrendingRow({ mediaList }: TrendingRowProps) {
     }
   };
 
-  const top10Trending = [...mediaList]
-    .sort((a, b) => b.views - a.views)
+  // ডেটা ফেচিং সেফটি চেক
+  const safeMediaList = Array.isArray(mediaList) ? mediaList : [];
+
+  const top10Trending = [...safeMediaList]
+    .sort((a, b) => (b.views || 0) - (a.views || 0))
     .slice(0, 10);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=600&auto=format&fit=crop";
   };
 
-  if (top10Trending.length === 0) return null;
+  if (top10Trending.length === 0) {
+    return (
+      <div className="w-full bg-black px-6 md:px-16 py-6 text-white text-center">
+        <h2 className="text-xl font-bold mb-4">Trending Now 🔥</h2>
+        <p className="text-zinc-500">No trending movies found at the moment.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-black px-6 md:px-16 py-6 text-white select-none block">
-      <h2 className="text-xl font-bold tracking-wide md:text-2xl font-sans mb-4">Trending Now</h2>
+      <h2 className="text-xl font-bold tracking-wide md:text-2xl font-sans mb-4">Trending Now 🔥</h2>
       
       <div className="group relative w-full">
         <button

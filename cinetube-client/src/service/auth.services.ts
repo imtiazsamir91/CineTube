@@ -3,7 +3,7 @@
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { cookies } from "next/headers";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+const BASE_API_URL =  process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!BASE_API_URL) {
     throw new Error("API_BASE_URL is not defined in environment variables");
@@ -135,7 +135,38 @@ export async function getUserInfo() {
         return null;
     }
 }
+export async function getMySubscription() {
+    try {
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("accessToken")?.value;
+        const sessionToken = cookieStore.get("better-auth.session_token")?.value;
 
+        // টোকেন না থাকলে রিকোয়েস্ট পাঠানোর দরকার নেই
+        if (!accessToken) {
+            return null;
+        }
+
+        const res = await fetch(`${BASE_API_URL}/subscription/my-status`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                // হেডার থেকে কুকি পাঠানো সবচেয়ে নিরাপদ পদ্ধতি (Server Action এর জন্য)
+                Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`
+            },
+        });
+
+        if (!res.ok) {
+            console.error("Subscription fetch failed:", res.status);
+            return null;
+        }
+
+        const result = await res.json();
+        return result.data; 
+    } catch (error) {
+        console.error("Error in getMySubscription:", error);
+        return null;
+    }
+}
 export async function logoutUser() {
     const cookieStore = await cookies();
     cookieStore.delete("accessToken");

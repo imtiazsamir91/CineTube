@@ -1,3 +1,4 @@
+// Import removed: not used in this file
 export type UserRole = "ADMIN" | "USER";
 
 export const isAuthRoute = (pathname: string): boolean => {

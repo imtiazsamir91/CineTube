@@ -1,54 +1,76 @@
-"use server";
 
-import { httpClient } from "@/lib/axios/httpClient"; 
 
-export const getMedias = async (queryString: string = "") => {
+import { httpClient } from "@/lib/axios/httpClient";
+import type { AxiosResponse } from "axios";
+
+// import { clientHttpClient } from "@/lib/axios/httpClient";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+export const getMedias = async (queryParams: { search?: string; categories?: string; page?: string } = {}) => {
     try {
+        const params = new URLSearchParams();
+        if (queryParams?.search) params.append("search", queryParams.search);
+        if (queryParams?.categories) params.append("categories", queryParams.categories);
+        if (queryParams?.page) params.append("page", queryParams.page);
+
+        const queryString = params.toString();
         const url = queryString ? `/media?${queryString}` : "/media";
-        const response = await httpClient.get(url);
-        return response;
+        
+        console.log("Fetching from:", `${API_BASE_URL}${url}`);
+        
+        const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}${url}`);
+
+        // এখানে চেক করুন রেসপন্স অবজেক্টের গঠন
+        console.log("Raw Response Data:", response.data);
+
+        // যদি আপনার রেসপন্স { success: true, data: { movies: [] } } হয়:
+        return (response.data as any)?.data?.movies || [];
     } catch (error) {
-        console.log("Error fetching medias:", error);
-        throw error;
+        console.error("Service Error:", error);
+        return [];
     }
 }
-
 export const getMediaById = async (id: string) => {
     try {
-        const response = await httpClient.get(`/media/${id}`);
-        return response;
+        const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}/media/${id}`);
+        return response.data;
     } catch (error) {
-        console.log("Error fetching media by id:", error);
+        console.error("Error fetching media by id:", error);
         throw error;
     }
 }
 
-export const createMedia = async (payload: any) => {
+// Auth Services
+export const getUserInfo = async () => {
     try {
-        const response = await httpClient.post("/media/create", payload);
-        return response;
+        const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}/auth/me`); 
+        return response.data;
     } catch (error) {
-        console.log("Error creating media:", error);
-        throw error;
+        console.error("Error fetching user info:", error);
+        return null;
     }
-}
+};
 
-export const updateMedia = async (id: string, payload: any) => {
+export const getNewTokensWithRefreshToken = async (refreshToken: string) => {
     try {
-        const response = await httpClient.patch(`/media/${id}`, payload);
-        return response;
+        const response: AxiosResponse = await httpClient.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+        return response.data;
     } catch (error) {
-        console.log("Error updating media:", error);
-        throw error;
+        console.error("Error refreshing token:", error);
+        return null;
     }
-}
+};
 
-export const deleteMedia = async (id: string) => {
+export const logoutUser = async () => {
     try {
-        const response = await httpClient.delete(`/media/${id}`);
-        return response;
+        
+        await httpClient.post(`${API_BASE_URL}/auth/logout`, {}); 
+        
+        console.log("Logout successful");
+        return { success: true };
     } catch (error) {
-        console.log("Error deleting media:", error);
-        throw error;
+        console.error("Logout error:", error);
+        return { success: false, error };
     }
-}
+};
