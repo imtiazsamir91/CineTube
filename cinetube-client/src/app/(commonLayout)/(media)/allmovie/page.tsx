@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation"; 
 import TrendingRow from "@/components/home/TrendingRow";
 import AllMovies from "@/components/home/AllMovie";
 import { useQuery } from "@tanstack/react-query";
@@ -7,10 +8,13 @@ import { getMedias } from "@/service/mediaService";
 
 export default function AllMoviePage() {
 
-  // queryKey পরিবর্তন করে একটি ইউনিক কী দেওয়া হয়েছে যাতে অন্য পেজের সাথে সংঘর্ষ না হয়
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search") || ""; 
+
+  
   const { data: mediaList, isLoading, error } = useQuery({
-    queryKey: ["all-movies-data"], 
-    queryFn: () => getMedias({}), 
+    queryKey: ["all-movies-data", searchQuery], 
+    queryFn: () => getMedias({ search: searchQuery }), 
     staleTime: 60000,
   });
 
@@ -23,7 +27,6 @@ export default function AllMoviePage() {
   }
 
   if (error) {
-    console.error("Fetch Error:", error);
     return (
       <div className="text-white text-center mt-20">
         Error loading data. Please try again.
@@ -31,19 +34,25 @@ export default function AllMoviePage() {
     );
   }
 
-  // data এর টাইপ চেক করে নিশ্চিত করা হচ্ছে যে এটি একটি অ্যারে
   const movies = Array.isArray(mediaList) ? mediaList : [];
 
   return (
     <main className="min-h-screen bg-black">
+    
+      <div className="pt-20 px-10">
+        <h1 className="text-white text-2xl font-bold">
+          {searchQuery ? `Search Results for: "${searchQuery}"` : "All Movies"}
+        </h1>
+      </div>
+
       {movies.length > 0 ? (
         <>
           <TrendingRow mediaList={movies} />
           <AllMovies mediaList={movies} />
         </>
       ) : (
-        <div className="text-white text-center pt-20">
-          No movies found.
+        <div className="text-white text-center pt-10">
+          No movies found {searchQuery && `for "${searchQuery}"`}
         </div>
       )}
     </main>

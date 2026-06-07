@@ -25,10 +25,10 @@ export default function NavbarClient({ initialUser }: { initialUser: any }) {
   const isAdmin = initialUser?.role === "ADMIN";
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
-  // সার্চ হ্যান্ডলার
+ 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim()) {
-      router.push(`/movies?search=${encodeURIComponent(searchQuery)}`);
+      router.push(`/allmovie?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
