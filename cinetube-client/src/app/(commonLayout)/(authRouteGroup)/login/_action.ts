@@ -21,7 +21,7 @@ export const loginAction = async (payload: ILoginPayload, redirectPath?: string)
         
         const response = await serverHttpClient.post("/auth/login", parsedPayload.data);
         
-        // এখানে পুরো রেসপন্স স্ট্রাকচার দেখুন
+       
         console.log("DEBUG: Full API Response:", JSON.stringify(response.data, null, 2));
 
         const result = response.data?.data || response.data; 
@@ -33,7 +33,6 @@ export const loginAction = async (payload: ILoginPayload, redirectPath?: string)
 
         const { accessToken, refreshToken, token, user } = result;
 
-        // কুকি সেট করার আগে ভ্যালু চেক করুন
         console.log("DEBUG: Setting accessToken cookie:", accessToken);
         
         await setTokenInCookies("accessToken", accessToken);

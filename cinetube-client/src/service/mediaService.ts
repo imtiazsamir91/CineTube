@@ -17,15 +17,11 @@ export const getMedias = async (queryParams: { search?: string; categories?: str
         const queryString = params.toString();
         const url = queryString ? `/media?${queryString}` : "/media";
         
-        console.log("Fetching from:", `${API_BASE_URL}${url}`);
-        
         const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}${url}`);
 
-        // এখানে চেক করুন রেসপন্স অবজেক্টের গঠন
-        console.log("Raw Response Data:", response.data);
-
-        // যদি আপনার রেসপন্স { success: true, data: { movies: [] } } হয়:
-        return (response.data as any)?.data?.movies || [];
+      
+        
+        return response.data?.movies || []; 
     } catch (error) {
         console.error("Service Error:", error);
         return [];

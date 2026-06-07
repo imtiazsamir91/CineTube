@@ -6,11 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getMedias } from "@/service/mediaService";
 
 export default function AllMoviePage() {
-  // queryKey তে একটি empty object পাস করা ভালো যদি ভবিষ্যতে ফিল্টারিং যোগ করেন
-  const { data: mediaList = [], isLoading, error } = useQuery({
-    queryKey: ["media-list"], 
-    queryFn: () => getMedias({}), // এখানে একটি empty object বা প্রয়োজনীয় ফিল্টার পাস করুন
-    staleTime: 60000, // ১ মিনিটের জন্য ডাটা ক্যাশ করবে, বারবার এপিআই কল হবে না
+
+  // queryKey পরিবর্তন করে একটি ইউনিক কী দেওয়া হয়েছে যাতে অন্য পেজের সাথে সংঘর্ষ না হয়
+  const { data: mediaList, isLoading, error } = useQuery({
+    queryKey: ["all-movies-data"], 
+    queryFn: () => getMedias({}), 
+    staleTime: 60000,
   });
 
   if (isLoading) {
@@ -21,22 +22,29 @@ export default function AllMoviePage() {
     );
   }
 
-  // error অবজেক্টটি চেক করা ভালো
   if (error) {
     console.error("Fetch Error:", error);
-    return <div className="text-white text-center mt-20">Error loading data. Please try again.</div>;
+    return (
+      <div className="text-white text-center mt-20">
+        Error loading data. Please try again.
+      </div>
+    );
   }
+
+  // data এর টাইপ চেক করে নিশ্চিত করা হচ্ছে যে এটি একটি অ্যারে
+  const movies = Array.isArray(mediaList) ? mediaList : [];
 
   return (
     <main className="min-h-screen bg-black">
-      {/* নিশ্চিত করুন mediaList খালি থাকলেও কম্পোনেন্টগুলো ক্র্যাশ করবে না */}
-      {mediaList.length > 0 ? (
+      {movies.length > 0 ? (
         <>
-          <TrendingRow mediaList={mediaList} />
-          <AllMovies mediaList={mediaList} />
+          <TrendingRow mediaList={movies} />
+          <AllMovies mediaList={movies} />
         </>
       ) : (
-        <div className="text-white text-center pt-20">No movies found.</div>
+        <div className="text-white text-center pt-20">
+          No movies found.
+        </div>
       )}
     </main>
   );
