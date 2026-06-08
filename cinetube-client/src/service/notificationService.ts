@@ -22,7 +22,7 @@ export const getMyNotifications = async () => {
 export const markNotificationAsRead = async (id: string) => {
     try {
         
-        const response = await httpClient.patch<{ data: any }>(`${API_BASE_URL}/notification/${id}/read`, {});
+        const response = await httpClient.post<{ data: any }>(`${API_BASE_URL}/notification/${id}/read`, {});
         return response.data?.data || {};
     } catch (error) {
         console.error(`Error marking notification ${id} as read:`, error);

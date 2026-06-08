@@ -3,20 +3,22 @@
 import { useSearchParams } from "next/navigation"; 
 import TrendingRow from "@/components/home/TrendingRow";
 import AllMovies from "@/components/home/AllMovie";
+import MyWatchlistRow from "@/components/home/MyWatchlistRow"; 
 import { useQuery } from "@tanstack/react-query";
 import { getMedias } from "@/service/mediaService";
+import { useWatchlist } from "@/hooks/useWatchlist";
 
 export default function AllMoviePage() {
-
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || ""; 
 
-  
   const { data: mediaList, isLoading, error } = useQuery({
     queryKey: ["all-movies-data", searchQuery], 
     queryFn: () => getMedias({ search: searchQuery }), 
     staleTime: 60000,
   });
+
+  const { watchlist } = useWatchlist();
 
   if (isLoading) {
     return (
@@ -26,35 +28,29 @@ export default function AllMoviePage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="text-white text-center mt-20">
-        Error loading data. Please try again.
-      </div>
-    );
-  }
-
   const movies = Array.isArray(mediaList) ? mediaList : [];
+  
+ 
+  const watchlistIds = watchlist?.map((item: any) => item.mediaId) || [];
+  const myWatchlistMovies = movies.filter((movie) => watchlistIds.includes(movie.id));
 
   return (
     <main className="min-h-screen bg-black">
-    
       <div className="pt-20 px-10">
-        <h1 className="text-white text-2xl font-bold">
-          {searchQuery ? `Search Results for: "${searchQuery}"` : "All Movies"}
-        </h1>
+        <h1 className="text-white text-3xl font-bold">Explore Movies</h1>
       </div>
 
-      {movies.length > 0 ? (
-        <>
-          <TrendingRow mediaList={movies} />
+      
+      <MyWatchlistRow watchlist={myWatchlistMovies} />
+
+     
+      <TrendingRow mediaList={movies} />
+
+     
+      <div className="mt-8">
+          <h2 className="text-white text-xl font-bold px-10 mb-4">All Movies 🎬</h2>
           <AllMovies mediaList={movies} />
-        </>
-      ) : (
-        <div className="text-white text-center pt-10">
-          No movies found {searchQuery && `for "${searchQuery}"`}
-        </div>
-      )}
+      </div>
     </main>
   );
 }

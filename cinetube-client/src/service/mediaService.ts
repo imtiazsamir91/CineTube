@@ -17,11 +17,10 @@ export const getMedias = async (queryParams: { search?: string; categories?: str
         const queryString = params.toString();
         const url = queryString ? `/media?${queryString}` : "/media";
         
-        const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}${url}`);
-
-      
+        const response: any = await httpClient.get(`${API_BASE_URL}${url}`);
         
-        return response.data?.movies || []; 
+        
+        return response?.data || []; 
     } catch (error) {
         console.error("Service Error:", error);
         return [];
