@@ -49,7 +49,7 @@ const removeFromWatchlist = async (userId: string, mediaId: string) => {
         where: {
             userId_mediaId: { userId, mediaId }
         }
-    });
+    }); 
 
     if (!watchlistExists) {
         throw new AppError(status.NOT_FOUND, "This item is not in your watchlist.");

@@ -113,29 +113,21 @@ const verifySubscriptionOtp = async (userId: string, otp: string) => {
   return activatedSubscription;
 };
 
-const getMySubscription = async (userId: string) => {
-  const currentTime = new Date();
-
+// subscription.service.ts
+const getMySubscription = async (userId: string) => { // userId আর্গুমেন্ট হিসেবে নিবেন
   return await prisma.subscription.findFirst({
     where: {
-      userId: userId,
+      userId: userId, // এখানে পাস করা userId ব্যবহার করবেন
       status: SubscriptionStatus.ACTIVE,
-      endDate: {
-        gt: currentTime, 
-      },
     },
-    orderBy: { endDate: "desc" },
+    orderBy: { createdAt: "desc" },
     include: {
       user: {
-        select: {
-          name: true,
-          email: true,
-        },
+        select: { name: true, email: true },
       },
     },
   });
 };
-
 export const subscriptionService = {
   createPendingSubscription,
   verifySubscriptionOtp,

@@ -76,8 +76,34 @@ const getContinueWatching = async (userId: string) => {
     }
   });
 };
+const recordInitialView = async (userId: string, mediaId: string) => {
+  
+  const existingHistory = await prisma.watchHistory.findUnique({
+    where: { userId_mediaId: { userId, mediaId } }
+  });
+
+  if (!existingHistory) {
+   
+    await prisma.watchHistory.create({
+      data: {
+        userId,
+        mediaId,
+        currentPosition: 0,
+        isCompleted: false,
+        duration: 0 
+      }
+    });
+
+    
+    await prisma.media.update({
+      where: { id: mediaId },
+      data: { views: { increment: 1 } }
+    });
+  }
+};
 
 export const watchHistoryService = {
   updateProgress,
-  getContinueWatching
+  getContinueWatching,
+  recordInitialView
 };

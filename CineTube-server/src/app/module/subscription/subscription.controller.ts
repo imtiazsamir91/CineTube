@@ -67,23 +67,17 @@ const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 
-const getMySubscription = async (req: Request, res: Response, next: NextFunction) => {
+export const getMySubscriptionController = async (req: any, res: any, next: NextFunction) => {
   try {
-    const userId = req.user!.userId;
-    const result = await subscriptionService.getMySubscription(userId);
-
-    if (!result) {
-      return res.status(httpStatus.OK).json({
-        success: true,
-        message: "Subscription details fetched successfully",
-        data: { message: "No active subscription found. You are a FREE user." },
-      });
-    }
+    // authMiddleware থেকে প্রাপ্ত userId ব্যবহার করুন
+    const userId = req.user.id; 
+    
+    const subscription = await subscriptionService.getMySubscription(userId);
 
     res.status(httpStatus.OK).json({
       success: true,
       message: "Active subscription details fetched successfully",
-      data: result,
+      data: subscription,
     });
   } catch (error) {
     next(error);
@@ -93,5 +87,5 @@ const getMySubscription = async (req: Request, res: Response, next: NextFunction
 export const subscriptionController = {
   checkoutSuccess,
   verifyOtp,
-  getMySubscription,
+  getMySubscription: getMySubscriptionController,
 };

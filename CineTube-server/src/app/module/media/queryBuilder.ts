@@ -11,12 +11,10 @@ export const buildMediaWhereQuery = (filters: MediaFilters, hasActiveSubscriptio
   const { search, releaseYear, videoQuality, categories } = filters;
   const where: any = {};
 
-  
   if (!hasActiveSubscription) {
     where.pricingType = PricingType.FREE;
   }
 
- 
   if (search) {
     where.OR = [
       { title: { contains: search, mode: "insensitive" } },
@@ -26,20 +24,17 @@ export const buildMediaWhereQuery = (filters: MediaFilters, hasActiveSubscriptio
     ];
   }
 
- 
   if (releaseYear) {
     where.releaseYear = Number(releaseYear);
   }
 
- 
   if (videoQuality) {
     where.videoQuality = videoQuality;
   }
 
-
   if (categories) {
     const categoriesArray = categories.split(",").map((cat) => cat.trim());
-    where.categories = { hasEvery: categoriesArray };
+    where.categories = { hasSome: categoriesArray };
   }
 
   return where;

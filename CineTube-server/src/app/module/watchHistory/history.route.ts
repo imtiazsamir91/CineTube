@@ -1,13 +1,17 @@
-import express from "express";
-import { authMiddleware } from "../../middleware/authMiddleware";
+import { Router } from "express";
 import { watchHistoryController } from "./history.controller";
-
-const router = express.Router();
-
-
-router.post("/update", authMiddleware(), watchHistoryController.updateProgress);
+import { authMiddleware } from "../../middleware/authMiddleware";
 
 
-router.get("/continue-watching", authMiddleware()  , watchHistoryController.getContinueWatching);
+const router = Router();
+
+
+router.post("/record-view", authMiddleware(), watchHistoryController.recordInitialView);
+
+
+router.post("/update-progress", authMiddleware(), watchHistoryController.updateProgress);
+
+
+router.get("/continue-watching", authMiddleware(), watchHistoryController.getContinueWatching);
 
 export const watchHistoryRoutes = router;

@@ -27,6 +27,8 @@ export const auth = betterAuth({
     //             return {
     //                 name: profile.name || "CineTube User",
     //                 email: profile.email,
+
+    
     //                 image: profile.picture || undefined, 
     //             };
     //         }
