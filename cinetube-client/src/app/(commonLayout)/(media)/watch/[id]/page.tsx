@@ -1,3 +1,5 @@
+import Comments from "@/components/Comments/Comments";
+import Rating from "@/components/Comments/Rating";
 import VideoPlayer from "@/components/watch/VideoPlayer";
 
 
@@ -24,10 +26,7 @@ export default async function WatchPage({
     <main className="max-w-6xl mx-auto px-4 py-10">
       {/* VIDEO PLAYER */}
       <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-950">
-        <VideoPlayer
-          mediaId={movie.id}
-          videoUrl={movie.videoLink}
-        />
+        <VideoPlayer mediaId={movie.id} videoUrl={movie.videoLink} />
       </div>
 
       {/* DETAILS */}
@@ -35,6 +34,12 @@ export default async function WatchPage({
         <h1 className="text-5xl font-extrabold tracking-tight text-white">
           {movie.title}
         </h1>
+
+        {/* RATING SECTION */}
+        <Rating
+          mediaId={movie.id}
+          initialRating={movie.averageRating || 0}
+        />
 
         <div className="flex flex-wrap gap-3">
           {movie.categories?.map((cat: string) => (
@@ -94,6 +99,11 @@ export default async function WatchPage({
               {movie.averageRating || 0} / 5
             </span>
           </p>
+        </div>
+
+        {/* COMMENTS SECTION */}
+        <div className="mt-12">
+          <Comments reviewId={movie.id} />
         </div>
       </div>
     </main>
