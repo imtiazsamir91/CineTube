@@ -1,15 +1,44 @@
-// src/service/watchlistService.ts
-import { httpClient } from "@/lib/axios/httpClient";
+import { httpClient, setAuthToken } from "@/lib/axios/httpClient";
 
-// যেহেতু httpClient-এ baseURL দেওয়া আছে, তাই এখানে আর তা যোগ করার প্রয়োজন নেই
+// কুকি থেকে টোকেন পাওয়ার ফাংশন (যদি প্রয়োজন হয়)
+const getToken = () => {
+    if (typeof document === "undefined") return "";
+    const name = "accessToken=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+      let c = ca[i].trim();
+      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+};
+
 export const getWatchlist = async () => {
-    return await httpClient.get(`/watchlist`);
+    setAuthToken(getToken());
+    try {
+        return await httpClient.get(`/watchlist`);
+    } catch (error) {
+        console.error("Error fetching watchlist:", error);
+        throw error;
+    }
 };
 
 export const addToWatchlist = async (mediaId: string) => {
-    return await httpClient.post(`/watchlist`, { mediaId });
+    setAuthToken(getToken());
+    try {
+        return await httpClient.post(`/watchlist`, { mediaId });
+    } catch (error) {
+        console.error("Error adding to watchlist:", error);
+        throw error;
+    }
 };
 
 export const removeFromWatchlist = async (mediaId: string) => {
-    return await httpClient.delete(`/watchlist/${mediaId}`);
+    setAuthToken(getToken());
+    try {
+        return await httpClient.delete(`/watchlist/${mediaId}`);
+    } catch (error) {
+        console.error("Error removing from watchlist:", error);
+        throw error;
+    }
 };

@@ -1,7 +1,9 @@
 import Comments from "@/components/Comments/Comments";
 import Rating from "@/components/Comments/Rating";
+import ReviewBox from "@/components/Comments/ReviewBox";
 import VideoPlayer from "@/components/watch/VideoPlayer";
-
+// import ReviewBox from "@/components/ReviewBox";
+import { notFound } from "next/navigation";
 
 export default async function WatchPage({
   params,
@@ -10,102 +12,135 @@ export default async function WatchPage({
 }) {
   const { id } = await params;
 
+  // -------------------------
+  // FETCH MOVIE
+  // -------------------------
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/media/${id}`,
-    {
-      cache: "no-store",
-    }
+    { cache: "no-store" }
   );
 
   const result = await res.json();
   const movie = result.data;
 
-  if (!movie) return <div>Movie not found!</div>;
+  if (!movie) notFound();
+
+  // -------------------------
+  // FETCH REVIEW
+  // -------------------------
+  const reviewRes = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/review/media/${movie.id}`,
+    { cache: "no-store" }
+  );
+
+  const reviewData = await reviewRes.json();
+  const reviews = reviewData.data || [];
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-10">
-      {/* VIDEO PLAYER */}
-      <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-950">
-        <VideoPlayer mediaId={movie.id} videoUrl={movie.videoLink} />
-      </div>
+    <>
+      {/* ================= VIDEO ================= */}
+      <section className="w-full pt-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="relative rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl bg-black">
 
-      {/* DETAILS */}
-      <div className="mt-10 space-y-6">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white">
-          {movie.title}
-        </h1>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-        {/* RATING SECTION */}
-        <Rating
-          mediaId={movie.id}
-          initialRating={movie.averageRating || 0}
-        />
+            <VideoPlayer
+              mediaId={movie.id}
+              videoUrl={movie.videoUrl}
+            />
+          </div>
+        </div>
+      </section>
 
-        <div className="flex flex-wrap gap-3">
-          {movie.categories?.map((cat: string) => (
-            <span
-              key={cat}
-              className="bg-red-900/30 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase border border-red-900/50"
-            >
-              {cat}
+      {/* ================= CONTENT ================= */}
+      <section className="max-w-5xl mx-auto px-4 py-10 space-y-10 text-white">
+
+        {/* TITLE */}
+        <div className="space-y-3">
+          <h1 className="text-4xl md:text-5xl font-bold">
+            {movie.title}
+          </h1>
+
+          {/* META */}
+          <div className="flex flex-wrap gap-3 text-xs text-gray-300">
+            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+              {movie.views?.toLocaleString()} views
             </span>
-          ))}
+
+            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+              {movie.duration} min
+            </span>
+
+            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+              {movie.releaseYear}
+            </span>
+
+            <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/30">
+              {movie.videoQuality}
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm font-medium text-zinc-400">
-          <span className="bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">
-            {movie.releaseYear}
-          </span>
-          <span className="bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">
-            {movie.videoQuality}
-          </span>
-          <span className="text-zinc-500">
-            {movie.views} views
-          </span>
-          <span className="text-zinc-500">
-            {movie.duration} mins
-          </span>
+        {/* ================= RATING ================= */}
+        <div className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
+          <h2 className="text-lg font-semibold mb-4">
+            Rate this movie
+          </h2>
+
+          <Rating
+            mediaId={movie.id}
+            initialRating={movie.averageRating || 0}
+          />
         </div>
 
-        <p className="text-zinc-300 text-lg leading-relaxed max-w-3xl">
-          {movie.synopsis}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-zinc-800">
-          <p className="text-zinc-400">
-            Director:{" "}
-            <span className="text-white font-semibold">
-              {movie.director || "N/A"}
-            </span>
-          </p>
-
-          <p className="text-zinc-400">
-            Cast:{" "}
-            <span className="text-white font-semibold">
-              {movie.cast || "N/A"}
-            </span>
-          </p>
-
-          <p className="text-zinc-400">
-            Pricing:{" "}
-            <span className="text-white font-semibold">
-              {movie.pricingType}
-            </span>
-          </p>
-
-          <p className="text-zinc-400">
-            Rating:{" "}
-            <span className="text-white font-semibold">
-              {movie.averageRating || 0} / 5
-            </span>
+        {/* ================= STORY ================= */}
+        <div>
+          <h3 className="text-2xl font-semibold mb-2">Story</h3>
+          <p className="text-gray-300">
+            {movie.synopsis}
           </p>
         </div>
 
-        {/* COMMENTS SECTION */}
-        <div className="mt-12">
-          <Comments reviewId={movie.id} />
+        {/* ================= DETAILS ================= */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6">
+
+          <p><span className="text-white">Director:</span> {movie.director || "N/A"}</p>
+          <p><span className="text-white">Cast:</span> {movie.cast || "N/A"}</p>
+          <p><span className="text-white">Type:</span> {movie.pricingType}</p>
+          <p><span className="text-white">Rating:</span> {movie.averageRating || 0}/5</p>
+
         </div>
-      </div>
-    </main>
+
+        {/* ================= REVIEWS ================= */}
+        <div className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6 space-y-6">
+
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">
+              Reviews & Discussions
+            </h2>
+            <span className="text-xs text-gray-400">
+              Community powered
+            </span>
+          </div>
+
+          {/* 🔥 REVIEW BOX (WORKING) */}
+          <ReviewBox movieId={movie.id} />
+
+          {/* COMMENTS */}
+          {reviews.length > 0 ? (
+            reviews.map((review: any) => (
+              <Comments key={review.id} reviewId={review.id} />
+            ))
+          ) : (
+            <div className="text-gray-400 text-sm">
+              No reviews yet — be the first to start the discussion.
+            </div>
+          )}
+
+        </div>
+
+      </section>
+    </>
   );
 }
