@@ -1,6 +1,6 @@
 import { httpClient, setAuthToken } from "@/lib/axios/httpClient";
 
-// কুকি থেকে টোকেন পাওয়ার ফাংশন
+
 const getToken = () => {
     if (typeof document === "undefined") return "";
     const name = "accessToken=";
@@ -13,15 +13,24 @@ const getToken = () => {
     return "";
 };
 
-export const createReview = async (data: { mediaId: string; rating: number; reviewText: string }) => {
-    
-    setAuthToken(getToken()); 
 
-    try {
-       
-        return await httpClient.post(`/review`, data);
-    } catch (error) {
-        console.error("Error creating review:", error);
-        throw error; 
-    }
+export const createReview = async (data: { mediaId: string; rating: number; reviewText: string }) => {
+    setAuthToken(getToken());
+    return await httpClient.post(`/review`, data);
+};
+
+export const getMediaReviews = async (mediaId: string) => {
+    return await httpClient.get(`/review/media/${mediaId}`);
+};
+
+
+export const deleteReview = async (reviewId: string) => {
+    setAuthToken(getToken());
+    return await httpClient.delete(`/review/${reviewId}`);
+};
+
+
+export const toggleReviewLike = async (reviewId: string) => {
+    setAuthToken(getToken());
+    return await httpClient.post(`/review/${reviewId}/like`);
 };

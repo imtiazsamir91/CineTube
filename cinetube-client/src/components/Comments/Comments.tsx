@@ -1,97 +1,94 @@
 "use client";
 
-import {
-  createComment,
-  deleteComment,
-  getComments,
-} from "../../service/commentService";
+import { createComment, deleteComment, getComments } from "../../service/commentService";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-export default function Comments({
-  reviewId,
-}: {
-  reviewId: string;
-}) {
+export default function Comments({ review }: { review: any }) {
   const [comments, setComments] = useState<any[]>([]);
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const fetchComments = async () => {
-    const data = await getComments(reviewId);
-    setComments(data);
+    try {
+      const data = await getComments(review.id);
+      setComments(data || []);
+    } catch (error) {
+      console.error("Failed to fetch comments:", error);
+    }
   };
 
   useEffect(() => {
-    fetchComments();
-  }, [reviewId]);
+    if (showComments) fetchComments();
+  }, [showComments, review.id]);
 
   const handlePost = async () => {
-    if (!text) return;
-
-   await createComment({
-  reviewId,
-  commentText: text,
-});
-
-    setText("");
-    fetchComments();
-  };
-
-  const handleDelete = async (id: string) => {
-    await deleteComment(id);
-    fetchComments();
-  };
-
-  const renderComments = (items: any[]) => {
-    return items.map((c) => (
-      <div key={c.id} className="border-l pl-4 mb-4">
-        <p className="text-white">{c.commentText}</p>
-
-        <span className="text-gray-400 text-sm">
-          {c.user.name}
-        </span>
-
-        <div className="flex gap-3 mt-1">
-          <button
-            onClick={() => handleDelete(c.id)}
-            className="text-red-400 text-xs"
-          >
-            Delete
-          </button>
-        </div>
-
-        {c.replies?.length > 0 && (
-          <div className="ml-4 mt-2">
-            {renderComments(c.replies)}
-          </div>
-        )}
-      </div>
-    ));
+    if (!text.trim()) return;
+    setLoading(true);
+    try {
+      await createComment({ reviewId: review.id, commentText: text.trim() });
+      setText("");
+      fetchComments();
+      toast.success("Comment posted!");
+    } catch (error) {
+      toast.error("Failed to post comment.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="mt-10">
-      <h2 className="text-xl text-white mb-3">
-        Comments
-      </h2>
-
-      {/* input */}
-      <div className="flex gap-2 mb-5">
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="flex-1 p-2 bg-zinc-900 text-white"
-          placeholder="Write a comment..."
-        />
-        <button
-          onClick={handlePost}
-          className="bg-red-600 px-4 text-white"
-        >
-          Post
-        </button>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4 shadow-sm">
+      {/* রিভিউয়ার তথ্য */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h4 className="font-bold text-red-500">{review.user?.name || "Anonymous"}</h4>
+          <p className="text-gray-400 text-xs">{new Date(review.createdAt).toLocaleDateString()}</p>
+        </div>
+        <span className="text-xs bg-zinc-950 px-3 py-1 rounded-full text-zinc-300 border border-zinc-700">
+          Rating: {review.rating}/10
+        </span>
       </div>
+      
+      <p className="text-white text-sm leading-relaxed">{review.reviewText}</p>
 
-      {/* list */}
-      <div>{renderComments(comments)}</div>
+      {/* কমেন্ট সেকশন টগল */}
+      <button 
+        onClick={() => setShowComments(!showComments)}
+        className="text-xs text-zinc-500 hover:text-white transition"
+      >
+        {showComments ? "Hide Discussions" : "View Discussions"}
+      </button>
+
+      {showComments && (
+        <div className="mt-4 pt-4 border-t border-zinc-800 space-y-4">
+          <div className="flex gap-2">
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="flex-1 p-2 bg-zinc-950 text-sm text-white rounded-lg border border-zinc-700"
+              placeholder="Add a comment..."
+            />
+            <button
+              onClick={handlePost}
+              disabled={loading}
+              className="bg-red-600 px-4 py-2 text-sm text-white rounded-lg disabled:opacity-50"
+            >
+              {loading ? "..." : "Reply"}
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {comments.map((c) => (
+              <div key={c.id} className="pl-3 border-l-2 border-zinc-700">
+                <p className="text-white text-xs">{c.commentText}</p>
+                <span className="text-[10px] text-zinc-500 uppercase">{c.user?.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

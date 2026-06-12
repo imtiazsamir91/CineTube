@@ -22,6 +22,8 @@ const getAuthHeaders = async () => {
   };
 };
 
+
+
 export async function recordInitialView(mediaId: string) {
   try {
     const res = await fetch(
