@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
     "@tanstack/react-devtools": "^0.10.5",
     "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-form-devtools": "^0.2.29",
