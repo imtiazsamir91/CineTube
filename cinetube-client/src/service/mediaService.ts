@@ -1,11 +1,22 @@
-
-
 import { httpClient } from "@/lib/axios/httpClient";
 import type { AxiosResponse } from "axios";
 
-// import { clientHttpClient } from "@/lib/axios/httpClient";
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
+export const createMedia = async (formData: FormData) => {
+    try {
+        const response: AxiosResponse = await httpClient.post(
+            `${API_BASE_URL}/media`, 
+            formData
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error creating media:", error);
+        throw error;
+    }
+};
+
 
 export const getMedias = async (queryParams: { search?: string; categories?: string; page?: string } = {}) => {
     try {
@@ -18,14 +29,14 @@ export const getMedias = async (queryParams: { search?: string; categories?: str
         const url = queryString ? `/media?${queryString}` : "/media";
         
         const response: any = await httpClient.get(`${API_BASE_URL}${url}`);
-        
-        
         return response?.data || []; 
     } catch (error) {
         console.error("Service Error:", error);
         return [];
     }
-}
+};
+
+
 export const getMediaById = async (id: string) => {
     try {
         const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}/media/${id}`);
@@ -34,9 +45,35 @@ export const getMediaById = async (id: string) => {
         console.error("Error fetching media by id:", error);
         throw error;
     }
-}
+};
 
-// Auth Services
+
+export const updateMedia = async (id: string, updateData: any) => {
+    try {
+        
+        const response: AxiosResponse = await (httpClient as any).put(
+            `${API_BASE_URL}/media/${id}`, 
+            updateData
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating media:", error);
+        throw error;
+    }
+};
+
+
+export const deleteMedia = async (id: string) => {
+    try {
+        const response: AxiosResponse = await httpClient.delete(`${API_BASE_URL}/media/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting media:", error);
+        throw error;
+    }
+};
+
+
 export const getUserInfo = async () => {
     try {
         const response: AxiosResponse = await httpClient.get(`${API_BASE_URL}/auth/me`); 
@@ -59,9 +96,7 @@ export const getNewTokensWithRefreshToken = async (refreshToken: string) => {
 
 export const logoutUser = async () => {
     try {
-        
         await httpClient.post(`${API_BASE_URL}/auth/logout`, {}); 
-        
         console.log("Logout successful");
         return { success: true };
     } catch (error) {

@@ -1,7 +1,11 @@
-export default function DashboardPage() {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-white mb-4">Admin Dashboard</h1>
-    </div>
-  );
+import React from "react";
+import AdminDashboardView from "@/components/admin/AdminDashboardView"; // আপনার সঠিক ইমপোর্ট পাথ ব্যবহার করুন
+
+export const metadata = {
+  title: "Admin Dashboard - Platform Stats",
+  description: "Overview of user engagement, media stats, and metrics.",
+};
+
+export default function AdminDashboardPage() {
+  return <AdminDashboardView />;
 }

@@ -13,7 +13,7 @@ export default function SubscriptionPage() {
           Unlock unlimited access to all movies and ad-free streaming.
         </p>
         
-        
+         
         <SubscriptionFlow />
       </div>
     </main>
