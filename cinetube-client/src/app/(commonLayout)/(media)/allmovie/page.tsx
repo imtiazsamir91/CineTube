@@ -28,10 +28,13 @@ export default function AllMoviePage() {
     );
   }
 
-  const movies = Array.isArray(mediaList) ? mediaList : [];
+  const list = Array.isArray(mediaList) ? mediaList : [];
   
- 
+  // ✅ নতুন মুভি সবার আগে দেখানোর জন্য অ্যারেকে রিভার্স (Reverse) করে নেওয়া হলো
+  const movies = [...list].reverse();
+  
   const watchlistIds = watchlist?.map((item: any) => item.mediaId) || [];
+  // ওয়াচলিস্ট ফিল্টারিংও লেটেস্ট মুভির ক্রমানুযায়ী করা হলো
   const myWatchlistMovies = movies.filter((movie) => watchlistIds.includes(movie.id));
 
   return (
@@ -40,13 +43,13 @@ export default function AllMoviePage() {
         <h1 className="text-white text-3xl font-bold">Explore Movies</h1>
       </div>
 
-      
+      {/* ওয়াচলিস্ট রো */}
       <MyWatchlistRow watchlist={myWatchlistMovies} />
 
-     
+      {/* ট্রেন্ডিং রো */}
       <TrendingRow mediaList={movies} />
 
-     
+      {/* অল মুভিস গ্রিড (এখানে সব মুভি দেখাবে এবং লেটেস্টগুলো উপরে থাকবে) */}
       <div className="mt-8">
           <h2 className="text-white text-xl font-bold px-10 mb-4">All Movies 🎬</h2>
           <AllMovies mediaList={movies} />

@@ -19,9 +19,12 @@ export default function Home() {
   const { watchlist } = useWatchlist();
   const list = Array.isArray(mediaList) ? mediaList : [];
 
-  
+  // ✅ নতুন মুভি সবার আগে দেখানোর জন্য অ্যারেকে রিভার্স (Reverse) করে নেওয়া হলো
+  const latestMovies = [...list].reverse();
+
   const watchlistIds = watchlist?.map((item: any) => item.mediaId || item.id) || [];
-  const myWatchlistMovies = list.filter((movie) => watchlistIds.includes(movie.id));
+  // ওয়াচলিস্ট ফিল্টারিংও লেটেস্ট মুভির ক্রমানুযায়ী করা হলো
+  const myWatchlistMovies = latestMovies.filter((movie) => watchlistIds.includes(movie.id));
 
   return (
     <main className="w-full min-h-screen bg-black flex flex-col overflow-x-hidden">
@@ -34,14 +37,14 @@ export default function Home() {
       ) : list.length > 0 ? (
         <div className="w-full bg-black relative z-30 pb-20 -mt-16 md:-mt-28">
           
-         
+          {/* ওয়াচলিস্ট রো */}
           <MyWatchlistRow watchlist={myWatchlistMovies} />
           
-         
-          <TrendingRow mediaList={list} />
+          {/* ট্রেন্ডিং রো (সব মুভি লেটেস্ট সিরিয়ালে) */}
+          <TrendingRow mediaList={latestMovies} />
           
-          
-          <AllMovies mediaList={list.slice(0, 10)} />
+          {/* ✅ হোম পেজে শুধু মাত্র লেটেস্ট ১০টি মুভি দেখাবে */}
+          <AllMovies mediaList={latestMovies.slice(0, 10)} />
           
           <div className="flex justify-center mt-10">
             <Link href="/allmovie" className="bg-zinc-800 hover:bg-[#B9090B] text-white px-8 py-3 rounded-full font-bold transition-all duration-300 hover:scale-110">
