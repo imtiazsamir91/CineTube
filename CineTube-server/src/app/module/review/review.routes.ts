@@ -15,7 +15,7 @@ router.post(
 );
 
 router.get("/media/:mediaId", reviewController.getMediaReviews);
-router.delete("/:reviewId", authMiddleware(), reviewController.deleteReview);
+router.delete("/:reviewId", authMiddleware("ADMIN"), reviewController.deleteReview);
 router.post("/:reviewId/like", authMiddleware(), reviewController.toggleReviewLike);
 
 export const reviewRoutes = router;

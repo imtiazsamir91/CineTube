@@ -73,27 +73,31 @@ const loginUser = async (payload: ILoginUserPayload) => {
     });
 
     if (!authResponse?.user) {
-        throw new AppError(
-            status.UNAUTHORIZED,
-            "Invalid credentials"
-        );
+        throw new AppError(status.UNAUTHORIZED, "Invalid credentials");
     }
 
-    const role =
-        (authResponse.user as any).role || "USER";
+    // পুরো ইউজার অবজেক্টটি নিয়ে চেক করুন
+    const userFromDb = await prisma.user.findUnique({
+        where: { id: authResponse.user.id }
+    });
+
+    // রোলটি এখানে সরাসরি Enum ভ্যালু হিসেবে পাওয়ার কথা
+    const role = userFromDb?.role || "USER"; 
+
+    console.log("Found Role in DB:", role); // ডিবাগ করার জন্য
 
     const accessToken = tokenUtils.getAccessToken({
         userId: authResponse.user.id,
         email: authResponse.user.email,
         name: authResponse.user.name,
-        role,
+        role: role as string, // Enum কে string এ কনভার্ট করুন
     });
 
     const refreshToken = tokenUtils.getRefreshToken({
         userId: authResponse.user.id,
         email: authResponse.user.email,
         name: authResponse.user.name,
-        role,
+        role: role as string,
     });
 
     return {

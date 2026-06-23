@@ -22,8 +22,8 @@ const createMedia = async (payload: any): Promise<Media> => {
             cast: payload.cast || null,
             streamingPlatforms: payload.streamingPlatforms || null,
             pricingType: payload.pricingType || PricingType.FREE,
-            videoLink: payload.videoUrl || null,    
-            posterUrl: payload.coverImage || null,  
+            videoLink: payload.videoLink || null,    
+            posterUrl: payload.posterUrl || null,    
             duration: payload.duration ? Number(payload.duration) : 0, 
             views: 0, 
             videoQuality: payload.videoQuality || VideoQuality.FHD, 
@@ -40,22 +40,12 @@ const createMedia = async (payload: any): Promise<Media> => {
 };
 
 const getAllMedia = async (filters: MediaFilters, loggedInUserId: string | null = null): Promise<any> => {
-    const { page = "1", limit = "10", sortBy } = filters;
+   
+    const { page = "1", limit = "100", sortBy } = filters;
     const skip = (Number(page) - 1) * Number(limit);
 
-    let hasActiveSubscription = false;
-    if (loggedInUserId) {
-        const activeSub = await prisma.subscription.findFirst({
-            where: {
-                userId: loggedInUserId,
-                status: 'ACTIVE',
-                endDate: { gte: new Date() }
-            }
-        });
-        if (activeSub) hasActiveSubscription = true;
-    }
-
-    const where = buildMediaWhereQuery(filters, hasActiveSubscription);
+  
+    const where = buildMediaWhereQuery(filters, true);
 
     let orderBy: any = { createdAt: 'desc' }; 
     if (sortBy === 'latest') orderBy = { releaseYear: 'desc' };

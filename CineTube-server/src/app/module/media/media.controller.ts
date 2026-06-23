@@ -21,16 +21,32 @@ declare global {
 const createMedia = catchAsync(
     async (req: Request, res: Response) => {
         const files = req.files as any;
+        let posterUrl = null;
+        let videoLink = null;
 
-        const coverImage = files?.["coverImage"] ? files["coverImage"][0].path : null;
-        const videoUrl = files?.["videoFile"] ? files["videoFile"][0].path : null;
-
-        const { id, createdAt, ...mediaData } = req.body;
         
+        if (files) {
+            if (!Array.isArray(files)) {
+                posterUrl = files["coverImage"]?.[0]?.path || files["posterUrl"]?.[0]?.path || null;
+                videoLink = files["videoFile"]?.[0]?.path || files["videoLink"]?.[0]?.path || null;
+            } else {
+                const coverFile = files.find((f: any) => f.fieldname === "coverImage" || f.fieldname === "posterUrl");
+                const vidFile = files.find((f: any) => f.fieldname === "videoFile" || f.fieldname === "videoLink");
+                if (coverFile) posterUrl = coverFile.path;
+                if (vidFile) videoLink = vidFile.path;
+            }
+        }
+
+        const { id, createdAt, releaseYear, duration, ...mediaData } = req.body;
+        
+       
         const mediaPayload = {
             ...mediaData,
-            coverImage,
-            videoUrl,
+            title: req.body.title, // টাইটেল সরাসরি বাইন্ড করা হলো
+            releaseYear: releaseYear ? Number(releaseYear) : new Date().getFullYear(),
+            duration: duration ? Number(duration) : 0,
+            posterUrl, 
+            videoLink, 
         };
         
         const result = await MediaService.createMedia(mediaPayload);
@@ -79,6 +95,9 @@ const updateMedia = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
         const { id: bodyId, createdAt, ...updateData } = req.body;
+        
+        if (updateData.releaseYear) updateData.releaseYear = Number(updateData.releaseYear);
+        if (updateData.duration) updateData.duration = Number(updateData.duration);
         
         const result = await MediaService.updateMedia(String(id), updateData);
         
